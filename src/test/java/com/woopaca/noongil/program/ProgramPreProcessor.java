@@ -1,5 +1,6 @@
 package com.woopaca.noongil.program;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.FactoryBean;
@@ -14,6 +15,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @SpringBootTest
@@ -29,7 +32,7 @@ public class ProgramPreProcessor {
         public RestClient restClient(FactoryBean factoryBean) {
             JdkClientHttpRequestFactory requestFactory = ClientHttpRequestFactoryBuilder.jdk()
                     .withCustomizer(customizeFactory ->
-                            customizeFactory.setReadTimeout(Duration.ofMillis(3_000)))
+                            customizeFactory.setReadTimeout(Duration.ofMillis(3_000L)))
                     .build();
 
             return RestClient.builder()
@@ -44,10 +47,21 @@ public class ProgramPreProcessor {
                 .queryParam("auth", "6d71787a696a637737346c597a6968")
                 .buildAndExpand(0, 10)
                 .toUri();
-        String body = restClient.get()
+        List<Map<String, String>> programs = restClient.get()
                 .uri(uri)
                 .retrieve()
-                .body(String.class);
-        log.info("body: {}", body);
+                .body(ProgramResponse.class)
+                .getPrograms();
+        log.info("programs: {}", programs);
+    }
+
+    record ProgramResponse(@JsonAlias("tbPartcptn") Programs programs) {
+
+        public List<Map<String, String>> getPrograms() {
+            return this.programs.row;
+        }
+    }
+
+    record Programs(List<Map<String, String>> row) {
     }
 }
