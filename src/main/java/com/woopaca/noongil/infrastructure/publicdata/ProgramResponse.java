@@ -8,6 +8,10 @@ import java.util.Map;
 
 public record ProgramResponse(@JsonAlias("tbPartcptn") Programs programs) {
 
+    public static ProgramResponse empty() {
+        return new ProgramResponse(new Programs(Collections.emptyList(), 0));
+    }
+
     public List<ProgramDto> getPrograms() {
         if (this.programs == null) {
             return Collections.emptyList();
@@ -19,6 +23,13 @@ public record ProgramResponse(@JsonAlias("tbPartcptn") Programs programs) {
                 .toList();
     }
 
-    public record Programs(List<Map<String, String>> row) {
+    public int getTotalCount() {
+        if (this.programs == null) {
+            return 0;
+        }
+        return this.programs.totalCount();
+    }
+
+    public record Programs(List<Map<String, String>> row, @JsonAlias("list_total_count") int totalCount) {
     }
 }

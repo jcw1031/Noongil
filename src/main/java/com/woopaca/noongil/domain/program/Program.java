@@ -1,6 +1,8 @@
 package com.woopaca.noongil.domain.program;
 
+import com.woopaca.noongil.domain.program.converter.IntegerListConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +16,7 @@ import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "program", indexes = {
@@ -31,9 +34,11 @@ public class Program {
     private String name;
 
     private LocalDate receptionStartDate;
+
     private LocalDate receptionEndDate;
 
     private LocalDate programStartDate;
+
     private LocalDate programEndDate;
 
     @Column(nullable = false, length = 1024)
@@ -51,8 +56,9 @@ public class Program {
     @Column(nullable = false, length = 13)
     private String contact;
 
-    @Column(length = 12)
-    private String ageRange;
+    @Convert(converter = IntegerListConverter.class)
+    @Column(length = 32)
+    private List<Integer> ageRange;
 
     @Column(nullable = false, length = 6)
     private String gender;
@@ -67,6 +73,9 @@ public class Program {
     @Column(nullable = false, length = 1024)
     private String receptionMethod;
 
+    @Column(length = 1024)
+    private String receptionUrl;
+
     @Column(nullable = false, length = 32, unique = true, columnDefinition = "CHAR(32)")
     private String uniqueId;
 
@@ -74,7 +83,7 @@ public class Program {
     }
 
     @Builder
-    public Program(String name, LocalDate receptionStartDate, LocalDate receptionEndDate, LocalDate programStartDate, LocalDate programEndDate, String address, String borough, Point location, String institution, String contact, String ageRange, String gender, FeeType feeType, String feeAmount, String receptionMethod, String uniqueId) {
+    public Program(String name, LocalDate receptionStartDate, LocalDate receptionEndDate, LocalDate programStartDate, LocalDate programEndDate, String address, String borough, Point location, String institution, String contact, List<Integer> ageRange, String gender, FeeType feeType, String feeAmount, String receptionMethod, String receptionUrl, String uniqueId) {
         this.name = name;
         this.receptionStartDate = receptionStartDate;
         this.receptionEndDate = receptionEndDate;
@@ -90,6 +99,7 @@ public class Program {
         this.feeType = feeType;
         this.feeAmount = feeAmount;
         this.receptionMethod = receptionMethod;
+        this.receptionUrl = receptionUrl;
         this.uniqueId = uniqueId;
     }
 }

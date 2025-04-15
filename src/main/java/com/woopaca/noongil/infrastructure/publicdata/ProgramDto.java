@@ -38,12 +38,12 @@ public record ProgramDto(Map<String, String> program) {
         return program.get(NAME_KEY);
     }
 
-    public LocalDate getRegistrationStartDate() {
+    public LocalDate getReceptionStartDate() {
         String registrationStartDate = program.get(RECEPTION_START_DATE_KEY);
         return parseDate(registrationStartDate);
     }
 
-    public LocalDate getRegistrationEndDate() {
+    public LocalDate getReceptionEndDate() {
         String registrationEndDate = program.get(RECEPTION_END_DATE_KEY);
         return parseDate(registrationEndDate);
     }
@@ -62,30 +62,31 @@ public record ProgramDto(Map<String, String> program) {
         if (StringUtils.hasText(registrationStartDate)) {
             return LocalDate.parse(registrationStartDate);
         }
-        return LocalDate.MIN;
+        return null;
     }
 
     public String getBorough() {
         return program.get(BOROUGH_KEY);
     }
 
-    public String getAgeRange() {
-        String ageRange = program.get(AGE_RANGE_KEY);
+    public List<Integer> getAgeRange() {
+        String ageRangeText = program.get(AGE_RANGE_KEY);
         Pattern pattern = Pattern.compile("(\\d+)");
-        Matcher matcher = pattern.matcher(ageRange);
+        Matcher matcher = pattern.matcher(ageRangeText);
 
         List<Integer> ages = new ArrayList<>();
         while (matcher.find()) {
             ages.add(Integer.parseInt(matcher.group()));
         }
-
-        if (ages.isEmpty()) {
-            return "나이 정보 없음";
+        if (ageRangeText.contains("60대 이상")) {
+            ages.add(100);
         }
 
-        int min = Collections.min(ages);
-        int max = Collections.max(ages);
-        return String.format("%d ~ %d대", min, max);
+        if (ages.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return ages;
     }
 
     public String getGender() {
@@ -139,8 +140,8 @@ public record ProgramDto(Map<String, String> program) {
         return "ProgramDto{" +
                "uniqueId='" + getUniqueId() + '\'' +
                ", name='" + getName() + '\'' +
-               ", registrationStartDate=" + getRegistrationStartDate() +
-               ", registrationEndDate=" + getRegistrationEndDate() +
+               ", registrationStartDate=" + getReceptionStartDate() +
+               ", registrationEndDate=" + getReceptionEndDate() +
                ", programStartDate=" + getProgramStartDate() +
                ", programEndDate=" + getProgramEndDate() +
                ", borough='" + getBorough() + '\'' +

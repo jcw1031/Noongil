@@ -1,10 +1,10 @@
 package com.woopaca.noongil.adapter.address;
 
+import com.woopaca.noongil.domain.address.AddressCoordinateConverter;
+import com.woopaca.noongil.domain.address.Coordinate;
 import com.woopaca.noongil.infrastructure.address.KakaoLocalClient;
 import com.woopaca.noongil.infrastructure.address.KakaoLocalClient.Address;
 import com.woopaca.noongil.infrastructure.address.KakaoLocalClient.AddressResponse;
-import com.woopaca.noongil.domain.address.AddressCoordinateConverter;
-import com.woopaca.noongil.domain.address.Coordinate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;

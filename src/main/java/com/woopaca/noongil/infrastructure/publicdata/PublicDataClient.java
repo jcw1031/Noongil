@@ -1,5 +1,6 @@
 package com.woopaca.noongil.infrastructure.publicdata;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -7,6 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Slf4j
 @Component
 public class PublicDataClient {
 
@@ -31,10 +33,28 @@ public class PublicDataClient {
         }
 
         URI uri = generateLiveAloneProgramsUri(page, pageSize);
-        return restClient.get()
-                .uri(uri)
-                .retrieve()
-                .body(ProgramResponse.class);
+        try {
+            return restClient.get()
+                    .uri(uri)
+                    .retrieve()
+                    .body(ProgramResponse.class);
+        } catch (Exception e) {
+            log.warn("[PublicDataClient][getLiveAlonePrograms] 공공데이터 API 호출 에러. page: {}, pageSize: {}", page, pageSize, e);
+            return ProgramResponse.empty();
+        }
+    }
+
+    public int getTotalPage() {
+        return getTotalPage(DEFAULT_PAGE_SIZE);
+    }
+
+    public int getTotalPage(int pageSize) {
+        ProgramResponse liveAlonePrograms = getLiveAlonePrograms(1, 1);
+        int totalCount = liveAlonePrograms.getTotalCount();
+        if (totalCount == 0) {
+            return 0;
+        }
+        return (int) Math.ceil((double) totalCount / pageSize);
     }
 
     private URI generateLiveAloneProgramsUri(int page, int pageSize) {
