@@ -18,11 +18,9 @@ class ProgramUpdateServiceTest {
 
         programUpdateService.getProgramFetchExecutor()
                 .shutdown();
-        programUpdateService.getProgramFetchExecutor()
-                .awaitTermination(1, TimeUnit.MINUTES);
-
         programUpdateService.getAddressCoordinateConvertExecutor()
                 .shutdown();
+
         programUpdateService.getAddressCoordinateConvertExecutor()
                 .awaitTermination(5, TimeUnit.MINUTES);
     }
