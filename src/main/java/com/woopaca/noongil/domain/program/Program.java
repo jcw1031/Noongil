@@ -1,14 +1,12 @@
 package com.woopaca.noongil.domain.program;
 
+import com.woopaca.noongil.domain.BaseEntity;
 import com.woopaca.noongil.domain.program.converter.IntegerListConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -24,11 +22,7 @@ import java.util.List;
         @Index(name = "sidx_location", columnList = "location")
 })
 @Getter
-public class Program {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Program extends BaseEntity {
 
     @Column(nullable = false, length = 1024)
     private String name;
