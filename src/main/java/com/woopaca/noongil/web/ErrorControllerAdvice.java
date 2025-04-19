@@ -1,12 +1,14 @@
 package com.woopaca.noongil.web;
 
 import com.woopaca.noongil.exception.BusinessException;
-import com.woopaca.noongil.web.ApiResults.ErrorResponse;
+import com.woopaca.noongil.web.dto.ApiResults;
+import com.woopaca.noongil.web.dto.ApiResults.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -180,6 +182,20 @@ public class ErrorControllerAdvice {
         log.warn(message);
         ErrorResponse errorResponse = ApiResults.error(message, "");
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
+
+    /**
+     * HTTP 요청 메소드 지원하지 않음 예외 처리
+     * @param exception {@link HttpRequestMethodNotSupportedException} 예외
+     * @return {@link ErrorResponse}
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
+        String message = exception.getMessage();
+        log.warn(message);
+        ErrorResponse errorResponse = ApiResults.error(message, "");
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(errorResponse);
     }
 

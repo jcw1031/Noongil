@@ -1,31 +1,55 @@
 package com.woopaca.noongil.application.emergency.contact;
 
 import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
+import com.woopaca.noongil.domain.emergencycontact.EmergencyContact;
+import com.woopaca.noongil.domain.emergencycontact.EmergencyContactRepository;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
+import com.woopaca.noongil.event.NotificationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class EmergencyContactService {
 
     private final UserRepository userRepository;
+    private final EmergencyContactRepository emergencyContactRepository;
+    private final EmergencyContactValidator emergencyContactValidator;
+    private final NotificationEventPublisher notificationEventPublisher;
 
-    public EmergencyContactService(UserRepository userRepository) {
+    public EmergencyContactService(UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, EmergencyContactValidator emergencyContactValidator, NotificationEventPublisher notificationEventPublisher) {
         this.userRepository = userRepository;
+        this.emergencyContactRepository = emergencyContactRepository;
+        this.emergencyContactValidator = emergencyContactValidator;
+        this.notificationEventPublisher = notificationEventPublisher;
     }
 
+    @Transactional
     public void registerEmergencyContact(String name, String contact) {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
         userRepository.acquireExclusiveLock(authenticatedUser.getId());
-        // 검증
-            // 등록된 연락처가 2개 미만인지 확인
-            // 이미 등록된 연락처가 아닌지 확인
-            // 자신의 연락처가 아닌지 확인
-        // 만약 상대방이 가입되어 있다면
-            // 비상연락망 생성(바로 ACCEPTED 상태)
-            // 상대방도 자동으로 비상연락망 생성(바로 ACCEPTED 상태)
-        // 만약 상대방이 가입되어 있지 않다면
-            // 비상연락망 생성(PENDING 상태)
-            // 상대방에게 비상연락망 등록 요청(SMS 발송)
+        emergencyContactValidator.validateRegistration(authenticatedUser, name, contact);
+
+        userRepository.findByContact(contact)
+                .ifPresentOrElse(
+                        registeredUser -> handleRegisteredUser(name, contact, authenticatedUser, registeredUser),
+                        () -> handleUnregisteredUser(name, contact, authenticatedUser)
+                );
+    }
+
+    private void handleRegisteredUser(String name, String contact, User authenticatedUser, User registeredUser) {
+        EmergencyContact emergencyContact = EmergencyContact
+                .accepted(name, contact, authenticatedUser.getId(), registeredUser.getId());
+        EmergencyContact registeredEmergencyContact = EmergencyContact
+                .accepted(authenticatedUser.getName(), contact, registeredUser.getId(), authenticatedUser.getId());
+        emergencyContactRepository.saveAll(List.of(emergencyContact, registeredEmergencyContact));
+    }
+
+    private void handleUnregisteredUser(String name, String contact, User authenticatedUser) {
+        EmergencyContact emergencyContact = EmergencyContact.pending(name, contact, authenticatedUser.getId());
+        emergencyContactRepository.save(emergencyContact);
+        notificationEventPublisher.publishRegisterEmergencyContactEvent(authenticatedUser.getName(), contact);
     }
 }

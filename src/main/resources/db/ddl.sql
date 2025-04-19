@@ -56,6 +56,7 @@ CREATE TABLE user
     name       VARCHAR(12)                                  NOT NULL,
     contact    VARCHAR(12)                                  NOT NULL,
     status     ENUM ('PENDING', 'ACTIVE') DEFAULT 'PENDING' NOT NULL,
+    push_token VARCHAR(1024),
     created_at DATETIME(3)                DEFAULT NOW(3),
     updated_at DATETIME(3)                DEFAULT NOW(3),
     PRIMARY KEY (id)

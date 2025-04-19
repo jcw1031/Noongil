@@ -1,0 +1,26 @@
+package com.woopaca.noongil.security;
+
+import com.woopaca.noongil.domain.user.User;
+import com.woopaca.noongil.domain.user.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@Slf4j
+@SpringBootTest
+class JwtProviderTest {
+
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    void issueAccessToken() {
+        User user = userRepository.findById(1L)
+                .get();
+        String accessToken = jwtProvider.issueAccessToken(user);
+        log.info("accessToken: {}", accessToken);
+    }
+}

@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -35,4 +36,38 @@ public class EmergencyContact extends BaseEntity {
     private Long userId;
 
     private Long contactUserId;
+
+    protected EmergencyContact() {
+    }
+
+    @Builder
+    public EmergencyContact(String name, String contact, boolean notification, EmergencyContactStatus status, Long userId, Long contactUserId) {
+        this.name = name;
+        this.contact = contact;
+        this.notification = notification;
+        this.status = status;
+        this.userId = userId;
+        this.contactUserId = contactUserId;
+    }
+
+    public static EmergencyContact accepted(String name, String contact, Long userId, Long contactUserId) {
+        return EmergencyContact.builder()
+                .name(name)
+                .contact(contact)
+                .notification(true)
+                .status(EmergencyContactStatus.ACCEPTED)
+                .userId(userId)
+                .contactUserId(contactUserId)
+                .build();
+    }
+
+    public static EmergencyContact pending(String name, String contact, Long userId) {
+        return EmergencyContact.builder()
+                .name(name)
+                .contact(contact)
+                .notification(false)
+                .status(EmergencyContactStatus.PENDING)
+                .userId(userId)
+                .build();
+    }
 }

@@ -31,14 +31,18 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
+    @Column(length = 1024)
+    private String pushToken;
+
     protected User() {
     }
 
     @Builder
-    public User(String email, String name, String contact, AccountStatus status) {
+    public User(String email, String name, String contact, AccountStatus status, String pushToken) {
         this.email = email;
         this.name = name;
         this.contact = contact;
         this.status = status;
+        this.pushToken = pushToken;
     }
 }
