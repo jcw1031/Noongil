@@ -7,6 +7,7 @@ import com.woopaca.noongil.infrastructure.apple.AppleProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 public class ApplePushConfiguration {
 
     @Bean
+    @Profile("production")
     public ApnsClient apnsClient(AppleProperties appleProperties) {
         try (InputStream resourceAsStream = new ClassPathResource(appleProperties.getPrivateKeyPath())
                 .getInputStream()) {
