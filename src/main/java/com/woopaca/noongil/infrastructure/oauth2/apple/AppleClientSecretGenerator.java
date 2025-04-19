@@ -2,6 +2,7 @@ package com.woopaca.noongil.infrastructure.oauth2.apple;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.woopaca.noongil.infrastructure.apple.AppleProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -22,17 +23,17 @@ import java.util.Date;
 @Component
 public class AppleClientSecretGenerator {
 
-    private final AppleOAuth2Properties appleOAuth2Properties;
+    private final AppleProperties appleProperties;
 
     private ECPrivateKey privateKey;
 
-    public AppleClientSecretGenerator(AppleOAuth2Properties appleOAuth2Properties) {
-        this.appleOAuth2Properties = appleOAuth2Properties;
+    public AppleClientSecretGenerator(AppleProperties appleProperties) {
+        this.appleProperties = appleProperties;
     }
 
     @PostConstruct
     public void loadKey() {
-        try (InputStream resourceAsStream = new ClassPathResource(appleOAuth2Properties.getPrivateKeyPath())
+        try (InputStream resourceAsStream = new ClassPathResource(appleProperties.getPrivateKeyPath())
                 .getInputStream()) {
             String key = new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8)
                     .replace("-----BEGIN PRIVATE KEY-----", "")
@@ -53,12 +54,12 @@ public class AppleClientSecretGenerator {
         Algorithm algorithm = Algorithm.ECDSA256(null, privateKey);
         Date currentDate = new Date();
         return JWT.create()
-                .withKeyId(appleOAuth2Properties.getPrivateKeyId())
-                .withIssuer(appleOAuth2Properties.getTeamId())
+                .withKeyId(appleProperties.getPrivateKeyId())
+                .withIssuer(appleProperties.getTeamId())
                 .withIssuedAt(currentDate)
                 .withExpiresAt(currentDate.toInstant().plusSeconds(60))
                 .withAudience("https://appleid.apple.com")
-                .withSubject(appleOAuth2Properties.getClientId())
+                .withSubject(appleProperties.getClientId())
                 .sign(algorithm);
     }
 }

@@ -3,10 +3,11 @@ package com.woopaca.noongil.infrastructure.publicdata;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,7 +75,7 @@ public record ProgramDto(Map<String, String> program) {
         Pattern pattern = Pattern.compile("(\\d+)");
         Matcher matcher = pattern.matcher(ageRangeText);
 
-        List<Integer> ages = new ArrayList<>();
+        Set<Integer> ages = new HashSet<>();
         while (matcher.find()) {
             ages.add(Integer.parseInt(matcher.group()));
         }
@@ -86,7 +87,9 @@ public record ProgramDto(Map<String, String> program) {
             return Collections.emptyList();
         }
 
-        return ages;
+        return ages.stream()
+                .sorted()
+                .toList();
     }
 
     public String getGender() {
@@ -98,7 +101,8 @@ public record ProgramDto(Map<String, String> program) {
     }
 
     public String getFeeAmount() {
-        return program.get(FEE_AMOUNT_KEY);
+        String feeAmount = program.get(FEE_AMOUNT_KEY);
+        return StringUtils.hasText(feeAmount) ? feeAmount : null;
     }
 
     public String getReceptionMethod() {
@@ -106,11 +110,13 @@ public record ProgramDto(Map<String, String> program) {
     }
 
     public String getReceptionUrl() {
-        return program.get(RECEPTION_URL_KEY);
+        String receptionUrl = program.get(RECEPTION_URL_KEY);
+        return StringUtils.hasText(receptionUrl) ? receptionUrl : null;
     }
 
     public String getContact() {
-        return program.get(CONTACT_KEY);
+        String contact = program.get(CONTACT_KEY);
+        return StringUtils.hasText(contact) ? contact : null;
     }
 
     public String getSimpleAddress() {

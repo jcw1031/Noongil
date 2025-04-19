@@ -16,12 +16,12 @@ import org.locationtech.jts.geom.Point;
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "program", indexes = {
         @Index(name = "uidx_unique_id", columnList = "uniqueId", unique = true),
         @Index(name = "sidx_location", columnList = "location")
 })
-@Getter
 public class Program extends BaseEntity {
 
     @Column(nullable = false, length = 1024)

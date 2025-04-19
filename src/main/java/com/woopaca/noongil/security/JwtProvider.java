@@ -3,7 +3,7 @@ package com.woopaca.noongil.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import org.springframework.security.core.userdetails.User;
+import com.woopaca.noongil.domain.user.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -29,7 +29,7 @@ public class JwtProvider {
                 .withIssuer(jwtProperties.getIssuer())
                 .withIssuedAt(currentDate)
                 .withExpiresAt(currentDate.toInstant().plusSeconds(jwtProperties.getAccessTokenExpiry()))
-                .withSubject(principal.getUsername())
+                .withSubject(principal.getEmail())
                 .sign(algorithm);
     }
 

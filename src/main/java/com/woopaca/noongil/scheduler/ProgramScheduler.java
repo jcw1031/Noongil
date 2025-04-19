@@ -15,7 +15,7 @@ public class ProgramScheduler {
         this.programUpdateService = programUpdateService;
     }
 
-    @Scheduled(cron = "0 0 0 * * MON")
+    @Scheduled(cron = "0 0 0 * * *")
     public void updatePrograms() {
         log.info("1인가구 프로그램 업데이트 시작");
         programUpdateService.updateNewPrograms();

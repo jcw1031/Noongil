@@ -3,9 +3,9 @@ package com.woopaca.noongil.application.program;
 import com.woopaca.noongil.adapter.program.ProgramCache;
 import com.woopaca.noongil.domain.program.ProgramRepository;
 import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ProgramCacheInitializer {
 
     private final ProgramRepository programRepository;

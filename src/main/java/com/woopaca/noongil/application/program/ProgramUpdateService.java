@@ -2,6 +2,7 @@ package com.woopaca.noongil.application.program;
 
 import com.woopaca.noongil.adapter.program.ProgramCache;
 import com.woopaca.noongil.domain.address.AddressCoordinateConverter;
+import com.woopaca.noongil.domain.address.Coordinate;
 import com.woopaca.noongil.domain.program.FeeType;
 import com.woopaca.noongil.domain.program.Program;
 import com.woopaca.noongil.domain.program.ProgramRepository;
@@ -10,7 +11,6 @@ import com.woopaca.noongil.infrastructure.publicdata.ProgramResponse;
 import com.woopaca.noongil.infrastructure.publicdata.PublicDataClient;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.stereotype.Service;
@@ -80,33 +80,37 @@ public class ProgramUpdateService {
             Thread.sleep(500L);
             addressCoordinateConverter.convertToCoordinate(cleanAddress)
                     .ifPresentOrElse(coordinate -> {
-                        Program programEntity = Program.builder()
-                                .name(program.getName())
-                                .receptionStartDate(program.getReceptionStartDate())
-                                .receptionEndDate(program.getReceptionEndDate())
-                                .programStartDate(program.getProgramStartDate())
-                                .programEndDate(program.getProgramEndDate())
-                                .address(cleanAddress)
-                                .borough(program.getBorough())
-                                .location(geometryFactory.createPoint(new Coordinate(coordinate.longitude(), coordinate.latitude())))
-                                .institution(program.getInstitution())
-                                .contact(program.getContact())
-                                .ageRange(program.getAgeRange())
-                                .gender(program.getGender())
-                                .feeType(FeeType.find(program.getFeeType()))
-                                .feeAmount(program.getFeeAmount())
-                                .receptionMethod(program.getReceptionMethod())
-                                .receptionUrl(program.getReceptionUrl())
-                                .uniqueId(uniqueId)
-                                .build();
+                        Program programEntity = convertToEntity(program, coordinate, uniqueId);
                         programRepository.save(programEntity);
                     }, () -> {
-                        log.warn("주소 변환 실패.(변환된 값 없음) uniqueId: {}, address: {})", uniqueId, cleanAddress);
+                        log.warn("주소 변환 실패.(변환된 값 없음) uniqueId: {})", uniqueId);
                         programCache.delete(uniqueId);
                     });
         } catch (Exception e) {
             log.error("1인가구 프로그램 저장 중 예외 발생. uniqueId: {})", uniqueId, e);
             programCache.delete(uniqueId);
         }
+    }
+
+    private Program convertToEntity(ProgramDto programDto, Coordinate coordinate, String uniqueId) {
+        return Program.builder()
+                .name(programDto.getName())
+                .receptionStartDate(programDto.getReceptionStartDate())
+                .receptionEndDate(programDto.getReceptionEndDate())
+                .programStartDate(programDto.getProgramStartDate())
+                .programEndDate(programDto.getProgramEndDate())
+                .address(programDto.getFullAddress())
+                .borough(programDto.getBorough())
+                .location(geometryFactory.createPoint(new org.locationtech.jts.geom.Coordinate(coordinate.longitude(), coordinate.latitude())))
+                .institution(programDto.getInstitution())
+                .contact(programDto.getContact())
+                .ageRange(programDto.getAgeRange())
+                .gender(programDto.getGender())
+                .feeType(FeeType.find(programDto.getFeeType()))
+                .feeAmount(programDto.getFeeAmount())
+                .receptionMethod(programDto.getReceptionMethod())
+                .receptionUrl(programDto.getReceptionUrl())
+                .uniqueId(uniqueId)
+                .build();
     }
 }

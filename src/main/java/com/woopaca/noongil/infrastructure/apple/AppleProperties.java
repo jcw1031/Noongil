@@ -1,4 +1,4 @@
-package com.woopaca.noongil.infrastructure.oauth2.apple;
+package com.woopaca.noongil.infrastructure.apple;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "oauth2.apple")
-public class AppleOAuth2Properties {
+@ConfigurationProperties(prefix = "apple")
+public class AppleProperties {
 
     private String clientId;
     private String teamId;

@@ -14,5 +14,4 @@ public class JwtProperties {
     private String issuer;
     private String clientSecret;
     private long accessTokenExpiry;
-    private long refreshTokenExpiry;
 }
