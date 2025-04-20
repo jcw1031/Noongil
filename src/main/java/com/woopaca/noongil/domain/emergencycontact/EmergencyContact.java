@@ -70,4 +70,16 @@ public class EmergencyContact extends BaseEntity {
                 .userId(userId)
                 .build();
     }
+
+    public void toAccepted(String contact, Long contactUserId) {
+        if (this.contact.equals(contact)) {
+            this.contactUserId = contactUserId;
+            this.status = EmergencyContactStatus.ACCEPTED;
+            this.notification = true;
+        }
+    }
+
+    public boolean isPending() {
+        return this.status == EmergencyContactStatus.PENDING;
+    }
 }

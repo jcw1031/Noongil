@@ -54,7 +54,7 @@ CREATE TABLE user
     id         BIGINT                                       NOT NULL AUTO_INCREMENT,
     email      VARCHAR(128)                                 NOT NULL,
     name       VARCHAR(12)                                  NOT NULL,
-    contact    VARCHAR(12)                                  NOT NULL,
+    contact    VARCHAR(12),
     status     ENUM ('PENDING', 'ACTIVE') DEFAULT 'PENDING' NOT NULL,
     push_token VARCHAR(1024),
     created_at DATETIME(3)                DEFAULT NOW(3),

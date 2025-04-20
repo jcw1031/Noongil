@@ -39,12 +39,12 @@ public class EmergencyContactService {
                 );
     }
 
-    private void handleRegisteredUser(String name, String contact, User authenticatedUser, User registeredUser) {
+    private void handleRegisteredUser(String name, String contact, User authenticatedUser, User otherUser) {
         EmergencyContact emergencyContact = EmergencyContact
-                .accepted(name, contact, authenticatedUser.getId(), registeredUser.getId());
-        EmergencyContact registeredEmergencyContact = EmergencyContact
-                .accepted(authenticatedUser.getName(), contact, registeredUser.getId(), authenticatedUser.getId());
-        emergencyContactRepository.saveAll(List.of(emergencyContact, registeredEmergencyContact));
+                .accepted(name, contact, authenticatedUser.getId(), otherUser.getId());
+        EmergencyContact otherEmergencyContact = EmergencyContact
+                .accepted(authenticatedUser.getName(), authenticatedUser.getContact(), otherUser.getId(), authenticatedUser.getId());
+        emergencyContactRepository.saveAll(List.of(emergencyContact, otherEmergencyContact));
     }
 
     private void handleUnregisteredUser(String name, String contact, User authenticatedUser) {

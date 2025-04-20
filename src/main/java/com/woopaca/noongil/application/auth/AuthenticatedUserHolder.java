@@ -14,7 +14,11 @@ public final class AuthenticatedUserHolder {
     }
 
     public static User getAuthenticatedUser() {
-        return contextHolder.get();
+        User authenticatedUser = contextHolder.get();
+        if (authenticatedUser == null) {
+            throw new IllegalStateException("사용자 인증 정보가 없습니다.");
+        }
+        return authenticatedUser;
     }
 
     public static void clear() {

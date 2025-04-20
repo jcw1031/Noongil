@@ -53,4 +53,8 @@ public class User extends BaseEntity {
                 .status(AccountStatus.PENDING)
                 .build();
     }
+
+    public void updateContact(String contact) {
+        this.contact = contact;
+    }
 }

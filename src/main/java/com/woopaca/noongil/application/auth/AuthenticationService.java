@@ -7,6 +7,7 @@ import com.woopaca.noongil.infrastructure.oauth2.apple.AppleToken;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleUserInformationExtractor;
 import com.woopaca.noongil.security.JwtProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthenticationService {
@@ -23,6 +24,7 @@ public class AuthenticationService {
         this.jwtProvider = jwtProvider;
     }
 
+    @Transactional
     public SignInResult authenticateUser(String authorizationCode, String name, String email) {
         AppleToken appleToken = (AppleToken) oAuth2Client.requestToken(authorizationCode);
         if (appleToken.isEmpty()) {
