@@ -1,6 +1,7 @@
 package com.woopaca.noongil.application.emergency.contact;
 
 import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
+import com.woopaca.noongil.application.user.UserValidator;
 import com.woopaca.noongil.domain.emergencycontact.EmergencyContact;
 import com.woopaca.noongil.domain.emergencycontact.EmergencyContactRepository;
 import com.woopaca.noongil.domain.user.User;
@@ -18,18 +19,21 @@ public class EmergencyContactService {
     private final EmergencyContactRepository emergencyContactRepository;
     private final EmergencyContactValidator emergencyContactValidator;
     private final NotificationEventPublisher notificationEventPublisher;
+    private final UserValidator userValidator;
 
-    public EmergencyContactService(UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, EmergencyContactValidator emergencyContactValidator, NotificationEventPublisher notificationEventPublisher) {
+    public EmergencyContactService(UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, EmergencyContactValidator emergencyContactValidator, NotificationEventPublisher notificationEventPublisher, UserValidator userValidator) {
         this.userRepository = userRepository;
         this.emergencyContactRepository = emergencyContactRepository;
         this.emergencyContactValidator = emergencyContactValidator;
         this.notificationEventPublisher = notificationEventPublisher;
+        this.userValidator = userValidator;
     }
 
     @Transactional
     public void registerEmergencyContact(String name, String contact) {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
         userRepository.acquireExclusiveLock(authenticatedUser.getId());
+        userValidator.validateActiveUser(authenticatedUser);
         emergencyContactValidator.validateRegistration(authenticatedUser, name, contact);
 
         userRepository.findByContact(contact)

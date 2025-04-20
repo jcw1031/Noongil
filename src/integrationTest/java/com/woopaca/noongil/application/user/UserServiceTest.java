@@ -19,7 +19,7 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Test
-    void updateUserInfo() throws InterruptedException {
+    void registerUserInfo() throws InterruptedException {
         User user = userRepository.findById(1L)
                 .get();
         AuthenticatedUserHolder.setAuthenticatedUser(user);
@@ -31,7 +31,7 @@ class UserServiceTest {
         User testUser = userRepository.findById(3L)
                 .get();
         AuthenticatedUserHolder.setAuthenticatedUser(testUser);
-        userService.updateUserInfo("01011111111");
+        userService.registerUserInfo("01011111111");
 
         Thread.sleep(2_000L);
     }

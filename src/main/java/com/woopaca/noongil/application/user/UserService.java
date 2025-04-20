@@ -4,11 +4,9 @@ import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
 import com.woopaca.noongil.event.UserEventPublisher;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 public class UserService {
 
@@ -21,10 +19,27 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserInfo(String contact) {
+    public void registerUserInfo(String contact) {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
         authenticatedUser.updateContact(contact);
         userRepository.save(authenticatedUser);
         userEventPublisher.publishRegisterContactEvent(authenticatedUser.getId(), contact);
+    }
+
+    public void registerUserPushToken(String pushToken) {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        authenticatedUser.updatePushToken(pushToken);
+        userRepository.save(authenticatedUser);
+    }
+
+    public void updateUserConsents(Boolean push, Boolean sms) {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        if (push != null) {
+            authenticatedUser.updatePushConsent(push);
+        }
+        if (sms != null) {
+            authenticatedUser.updateSmsConsent(sms);
+        }
+        userRepository.save(authenticatedUser);
     }
 }

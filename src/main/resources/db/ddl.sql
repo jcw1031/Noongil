@@ -51,14 +51,16 @@ CREATE INDEX idx_contact ON emergency_contact (contact);
 
 CREATE TABLE user
 (
-    id         BIGINT                                       NOT NULL AUTO_INCREMENT,
-    email      VARCHAR(128)                                 NOT NULL,
-    name       VARCHAR(12)                                  NOT NULL,
-    contact    VARCHAR(12),
-    status     ENUM ('PENDING', 'ACTIVE') DEFAULT 'PENDING' NOT NULL,
-    push_token VARCHAR(1024),
-    created_at DATETIME(3)                DEFAULT NOW(3),
-    updated_at DATETIME(3)                DEFAULT NOW(3),
+    id                BIGINT                                       NOT NULL AUTO_INCREMENT,
+    email             VARCHAR(128)                                 NOT NULL,
+    name              VARCHAR(12)                                  NOT NULL,
+    contact           VARCHAR(12),
+    status            ENUM ('PENDING', 'ACTIVE') DEFAULT 'PENDING' NOT NULL,
+    push_token        VARCHAR(1024),
+    push_notification BOOLEAN                    DEFAULT FALSE     NOT NULL,
+    sms_notification  BOOLEAN                    DEFAULT FALSE     NOT NULL,
+    created_at        DATETIME(3)                DEFAULT NOW(3),
+    updated_at        DATETIME(3)                DEFAULT NOW(3),
     PRIMARY KEY (id)
 );
 
