@@ -45,4 +45,12 @@ public class User extends BaseEntity {
         this.status = status;
         this.pushToken = pushToken;
     }
+
+    public static User signUp(String name, String email) {
+        return User.builder()
+                .name(name)
+                .email(email)
+                .status(AccountStatus.PENDING)
+                .build();
+    }
 }

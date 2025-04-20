@@ -27,9 +27,9 @@ public record ApiResults() {
         return new ErrorResponse(LocalDateTime.now(), false, message, errorCode);
     }
 
-    public record ApiResponse<T>(LocalDateTime serverDateTime, boolean success, String message, T data) {
+    public record ApiResponse<T>(LocalDateTime serverTimestamp, boolean success, String message, T data) {
     }
 
-    public record ErrorResponse(LocalDateTime serverDateTime, boolean success, String message, String errorCode) {
+    public record ErrorResponse(LocalDateTime serverTimestamp, boolean success, String message, String errorCode) {
     }
 }

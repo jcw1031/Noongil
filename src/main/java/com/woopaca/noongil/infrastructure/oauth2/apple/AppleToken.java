@@ -10,6 +10,10 @@ import com.woopaca.noongil.infrastructure.oauth2.OAuth2Token;
 public record AppleToken(String accessToken, String idToken) implements OAuth2Token {
 
     public static AppleToken empty() {
-        return null;
+        return new AppleToken(null, null);
+    }
+
+    public boolean isEmpty() {
+        return accessToken == null || idToken == null;
     }
 }

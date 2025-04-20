@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Objects;
+
 @Component
 public class AuthenticateInterceptor implements HandlerInterceptor {
 
@@ -22,6 +24,11 @@ public class AuthenticateInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String subject = authenticationProvider.getSubject();
+        if (Objects.equals(subject, "anonymousUser")) {
+            AuthenticatedUserHolder.setAuthenticatedUser(null);
+            return true;
+        }
+
         User authenticatedUser = userRepository.findByEmail(subject)
                 .orElseThrow();
         AuthenticatedUserHolder.setAuthenticatedUser(authenticatedUser);
