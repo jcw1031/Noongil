@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 public class ApplePushConfiguration {
 
     @Bean
-    @Profile({"production", "develop"})
+    @Profile({"production", "develop", "local-develop"})
     public ApnsClient apnsClient(AppleProperties appleProperties) {
         try (InputStream resourceAsStream = new ClassPathResource(appleProperties.getPrivateKeyPath())
                 .getInputStream()) {

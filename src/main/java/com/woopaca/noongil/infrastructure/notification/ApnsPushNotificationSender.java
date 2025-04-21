@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile({"production", "develop"})
+@Profile({"production", "develop", "local-develop"})
 public class ApnsPushNotificationSender implements PushNotificationSender {
 
     private final ApnsClient apnsClient;

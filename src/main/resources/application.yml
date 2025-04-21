@@ -29,6 +29,16 @@ spring:
 ---
 
 spring:
+  config:
+    activate:
+      on-profile: local-develop
+    import:
+      - classpath:secrets/application-common.yml
+      - classpath:secrets/application-local-develop.yml
+
+---
+
+spring:
   profiles:
     active: local
   application:

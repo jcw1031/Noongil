@@ -3,7 +3,6 @@ package com.woopaca.noongil.application.user;
 import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
-import com.woopaca.noongil.event.UserEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,15 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserEventPublisher userEventPublisher;
 
-    public UserService(UserRepository userRepository, UserEventPublisher userEventPublisher) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userEventPublisher = userEventPublisher;
     }
 
     @Transactional
     public void registerUserInfo(String contact) {
+        userRepository.findByContact(contact)
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("이미 등록된 연락처입니다.");
+                });
+
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
         authenticatedUser.updateContact(contact);
         userRepository.save(authenticatedUser);
