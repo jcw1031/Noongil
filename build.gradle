@@ -18,6 +18,15 @@ repositories {
     mavenCentral()
 }
 
+bootJar {
+    archiveFileName = 'noongil.jar'
+    enabled = true
+}
+
+jar {
+    enabled = false
+}
+
 sourceSets {
     integrationTest {
         java.srcDir file('src/integrationTest/java')
