@@ -23,7 +23,6 @@ public class UserService {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
         authenticatedUser.updateContact(contact);
         userRepository.save(authenticatedUser);
-        userEventPublisher.publishRegisterContactEvent(authenticatedUser.getId(), contact);
     }
 
     public void registerUserPushToken(String pushToken) {

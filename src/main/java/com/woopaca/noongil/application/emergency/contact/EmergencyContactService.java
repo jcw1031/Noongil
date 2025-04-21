@@ -10,8 +10,6 @@ import com.woopaca.noongil.event.NotificationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class EmergencyContactService {
 
@@ -46,9 +44,7 @@ public class EmergencyContactService {
     private void handleRegisteredUser(String name, String contact, User authenticatedUser, User otherUser) {
         EmergencyContact emergencyContact = EmergencyContact
                 .accepted(name, contact, authenticatedUser.getId(), otherUser.getId());
-        EmergencyContact otherEmergencyContact = EmergencyContact
-                .accepted(authenticatedUser.getName(), authenticatedUser.getContact(), otherUser.getId(), authenticatedUser.getId());
-        emergencyContactRepository.saveAll(List.of(emergencyContact, otherEmergencyContact));
+        emergencyContactRepository.save(emergencyContact);
     }
 
     private void handleUnregisteredUser(String name, String contact, User authenticatedUser) {
