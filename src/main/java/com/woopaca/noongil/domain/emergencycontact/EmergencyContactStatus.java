@@ -5,9 +5,9 @@ public enum EmergencyContactStatus {
     PENDING("대기"),
     ACCEPTED("수락");
 
-    private final String description;
+    private final String expression;
 
-    EmergencyContactStatus(String description) {
-        this.description = description;
+    EmergencyContactStatus(String expression) {
+        this.expression = expression;
     }
 }

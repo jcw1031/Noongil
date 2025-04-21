@@ -15,4 +15,6 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
             GROUP BY p.borough
             """)
     Collection<ProgramsCountByBorough> countEachBorough();
+
+    Collection<Program> findByBorough(String borough);
 }
