@@ -1,5 +1,8 @@
 package com.woopaca.noongil.domain.emergencycontact;
 
+import lombok.Getter;
+
+@Getter
 public enum EmergencyContactStatus {
 
     PENDING("대기"),

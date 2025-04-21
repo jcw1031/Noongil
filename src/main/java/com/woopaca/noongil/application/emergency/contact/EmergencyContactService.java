@@ -10,6 +10,8 @@ import com.woopaca.noongil.event.NotificationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+
 @Service
 public class EmergencyContactService {
 
@@ -51,5 +53,22 @@ public class EmergencyContactService {
         EmergencyContact emergencyContact = EmergencyContact.pending(name, contact, authenticatedUser.getId());
         emergencyContactRepository.save(emergencyContact);
         notificationEventPublisher.publishRegisterEmergencyContactEvent(authenticatedUser.getName(), contact);
+    }
+
+    public Collection<EmergencyContact> findRegisteredEmergencyContacts() {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        return emergencyContactRepository.findByUserId(authenticatedUser.getId());
+    }
+
+    public void changeNotification(Long contactId, boolean notification) {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        userValidator.validateActiveUser(authenticatedUser);
+
+        EmergencyContact emergencyContact = emergencyContactRepository.findById(contactId)
+                .orElseThrow(() -> new IllegalArgumentException("비상연락망이 존재하지 않습니다. contactId: " + contactId));
+        emergencyContactValidator.validateChangeNotification(emergencyContact, authenticatedUser);
+
+        emergencyContact.changeNotification(notification);
+        emergencyContactRepository.save(emergencyContact);
     }
 }

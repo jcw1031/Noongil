@@ -82,4 +82,8 @@ public class EmergencyContact extends BaseEntity {
     public boolean isPending() {
         return this.status == EmergencyContactStatus.PENDING;
     }
+
+    public void changeNotification(boolean notification) {
+        this.notification = notification;
+    }
 }

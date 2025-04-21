@@ -2,10 +2,12 @@ package com.woopaca.noongil.application.emergency.contact;
 
 import com.woopaca.noongil.domain.emergencycontact.EmergencyContact;
 import com.woopaca.noongil.domain.emergencycontact.EmergencyContactRepository;
+import com.woopaca.noongil.domain.emergencycontact.EmergencyContactStatus;
 import com.woopaca.noongil.domain.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @Service
 public class EmergencyContactValidator {
@@ -31,6 +33,16 @@ public class EmergencyContactValidator {
 
         if (user.getContact().equals(contact)) {
             throw new IllegalArgumentException("자신의 연락처는 비상연락망으로 등록할 수 없습니다.");
+        }
+    }
+
+    public void validateChangeNotification(EmergencyContact emergencyContact, User authenticatedUser) {
+        if (!Objects.equals(emergencyContact.getUserId(), authenticatedUser.getId())) {
+            throw new IllegalArgumentException("비상연락망 등록자가 아닙니다.");
+        }
+
+        if (emergencyContact.getStatus() != EmergencyContactStatus.ACCEPTED) {
+            throw new IllegalArgumentException("비상연락망 등록이 승인되지 않았습니다.");
         }
     }
 }
