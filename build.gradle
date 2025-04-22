@@ -64,6 +64,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:4.4.0'
     implementation 'org.hibernate.orm:hibernate-spatial'
     implementation 'com.eatthepath:pushy:0.15.4'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
     runtimeOnly 'com.mysql:mysql-connector-j'
