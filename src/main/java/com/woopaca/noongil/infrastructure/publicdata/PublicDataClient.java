@@ -1,5 +1,6 @@
 package com.woopaca.noongil.infrastructure.publicdata;
 
+import com.woopaca.noongil.infrastructure.publicdata.CultureEventsResponse.CultureEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -7,6 +8,9 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -63,5 +67,25 @@ public class PublicDataClient {
         return UriComponentsBuilder.fromUriString("http://openapi.seoul.go.kr:8088/{authentication-key}/json/tbPartcptn/{start-row}/{end-row}")
                 .buildAndExpand(publicDataAuthenticationKey, startRow, endRow)
                 .toUri();
+    }
+
+    public List<CultureEvent> getCultureEvents(int page) {
+        int startRow = (page - 1) * DEFAULT_PAGE_SIZE + 1;
+        int endRow = startRow + DEFAULT_PAGE_SIZE - 1;
+        URI uri = UriComponentsBuilder.fromUriString("http://openapi.seoul.go.kr:8088/{authentication-key}/json/culturalEventInfo/{start-row}/{end-row}")
+                .buildAndExpand(publicDataAuthenticationKey, startRow, endRow)
+                .toUri();
+
+        try {
+            return Optional.ofNullable(restClient.get()
+                            .uri(uri)
+                            .retrieve()
+                            .body(CultureEventsResponse.class))
+                    .map(CultureEventsResponse::getCultureEvents)
+                    .orElseGet(Collections::emptyList);
+        } catch (Exception e) {
+            log.warn("[PublicDataClient][getCultureEvents] 공공데이터 API 호출 에러. page: {}", page, e);
+            return Collections.emptyList();
+        }
     }
 }
