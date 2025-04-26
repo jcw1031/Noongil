@@ -80,3 +80,26 @@ CREATE TABLE emergency_notification
 );
 
 CREATE INDEX idx_updated_at ON emergency_notification (updated_at);
+
+CREATE TABLE health_model
+(
+    id         BIGINT       NOT NULL AUTO_INCREMENT,
+    name       VARCHAR(128) NOT NULL,
+    user_id    BIGINT       NOT NULL,
+    created_at DATETIME(3) DEFAULT NOW(3),
+    updated_at DATETIME(3) DEFAULT NOW(3),
+    PRIMARY KEY (id)
+);
+
+CREATE UNIQUE INDEX uidx_user_id ON health_model (user_id);
+
+CREATE TABLE user_activity
+(
+    id         BIGINT NOT NULL AUTO_INCREMENT,
+    user_id    BIGINT NOT NULL,
+    created_at DATETIME(3) DEFAULT NOW(3),
+    updated_at DATETIME(3) DEFAULT NOW(3),
+    PRIMARY KEY (id)
+);
+
+CREATE INDEX idx_user_activity ON user_activity (user_id);
