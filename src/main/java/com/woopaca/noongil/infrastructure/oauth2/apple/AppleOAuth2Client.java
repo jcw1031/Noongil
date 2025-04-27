@@ -20,17 +20,19 @@ public class AppleOAuth2Client extends OAuth2Client {
     private static final String GRANT_TYPE = "authorization_code";
 
     private final AppleProperties appleProperties;
+    private final AppleClientSecretGenerator appleClientSecretGenerator;
 
-    public AppleOAuth2Client(RestClient restClient, AppleProperties appleProperties) {
+    public AppleOAuth2Client(RestClient restClient, AppleProperties appleProperties, AppleClientSecretGenerator appleClientSecretGenerator) {
         super(restClient);
         this.appleProperties = appleProperties;
+        this.appleClientSecretGenerator = appleClientSecretGenerator;
     }
 
     @Override
     public OAuth2Token requestToken(String authorizationCode) {
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("client_id", appleProperties.getClientId());
-        requestBody.add("client_secret", null);
+        requestBody.add("client_secret", appleClientSecretGenerator.generateClientSecret());
         requestBody.add("code", authorizationCode);
         requestBody.add("grant_type", GRANT_TYPE);
 
@@ -42,7 +44,7 @@ public class AppleOAuth2Client extends OAuth2Client {
                     .retrieve()
                     .body(AppleToken.class);
         } catch (HttpStatusCodeException e) {
-            log.error("애플 OAuth2 액세스 토큰 요청 실패", e);
+            log.error("애플 OAuth2 액세스 토큰 요청 실패. message: {}", e.getMessage());
             return AppleToken.empty();
         }
     }

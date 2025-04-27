@@ -140,28 +140,4 @@ public record ProgramDto(Map<String, String> program) {
         }
         return address;
     }
-
-    @Override
-    public String toString() {
-        return "ProgramDto{" +
-               "uniqueId='" + getUniqueId() + '\'' +
-               ", name='" + getName() + '\'' +
-               ", registrationStartDate=" + getReceptionStartDate() +
-               ", registrationEndDate=" + getReceptionEndDate() +
-               ", programStartDate=" + getProgramStartDate() +
-               ", programEndDate=" + getProgramEndDate() +
-               ", borough='" + getBorough() + '\'' +
-               ", ageRange='" + getAgeRange() + '\'' +
-               ", gender='" + getGender() + '\'' +
-               ", feeType='" + getFeeType() + '\'' +
-               ", feeAmount='" + getFeeAmount() + '\'' +
-               ", receptionMethod='" + getReceptionMethod() + '\'' +
-               ", receptionUrl='" + getReceptionUrl() + '\'' +
-               ", contact='" + getContact() + '\'' +
-               ", simpleAddress='" + getSimpleAddress() + '\'' +
-               ", detailedAddress='" + getDetailedAddress() + '\'' +
-               ", institution='" + getInstitution() + '\'' +
-               ", fullAddress='" + getFullAddress() + '\'' +
-               '}';
-    }
 }

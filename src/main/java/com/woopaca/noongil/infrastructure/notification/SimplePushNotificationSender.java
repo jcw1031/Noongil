@@ -5,5 +5,5 @@ import org.springframework.stereotype.Component;
 
 @Profile("local")
 @Component
-public class SimplePushNotification implements PushNotificationSender {
+public class SimplePushNotificationSender implements PushNotificationSender {
 }

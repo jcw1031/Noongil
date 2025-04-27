@@ -74,7 +74,7 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
         String message = exception.getMessage();
-        log.warn(message, exception);
+        log.warn(message);
         ErrorResponse errorResponse = ApiResults.error(message, "");
         return ResponseEntity.badRequest()
                 .body(errorResponse);
@@ -88,7 +88,7 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException exception) {
         String message = exception.getMessage();
-        log.warn(message, exception);
+        log.warn(message);
         ErrorResponse errorResponse = ApiResults.error(message, "");
         return ResponseEntity.badRequest()
                 .body(errorResponse);

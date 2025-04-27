@@ -6,9 +6,11 @@ import com.woopaca.noongil.infrastructure.oauth2.OAuth2Client;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleToken;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleUserInformationExtractor;
 import com.woopaca.noongil.security.JwtProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class AuthenticationService {
 
@@ -28,6 +30,7 @@ public class AuthenticationService {
     public SignInResult authenticateUser(String authorizationCode, String name, String email) {
         AppleToken appleToken = (AppleToken) oAuth2Client.requestToken(authorizationCode);
         if (appleToken.isEmpty()) {
+            log.error("authorizationCode: {}, name: {}, email: {}", authorizationCode, name, email);
             throw new IllegalArgumentException("애플 로그인에 실패했습니다.");
         }
 
