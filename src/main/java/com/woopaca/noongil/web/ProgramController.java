@@ -48,7 +48,7 @@ public class ProgramController {
             @RequestParam(value = "borough", required = false) String borough
     ) {
         if (!StringUtils.hasText(borough)) {
-            List<ProgramListResponse> response = programRepository.findAll()
+            List<ProgramListResponse> response = programRepository.findFirst100ByOrderByProgramStartDateDesc()
                     .stream()
                     .map(ProgramListResponse::from)
                     .toList();

@@ -17,4 +17,6 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     Collection<ProgramsCountByBorough> countEachBorough();
 
     Collection<Program> findByBorough(String borough);
+
+    Collection<Program> findFirst100ByOrderByProgramStartDateDesc();
 }

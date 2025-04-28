@@ -1,7 +1,9 @@
 package com.woopaca.noongil.application.mlmodel;
 
 import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
+import com.woopaca.noongil.domain.mlmodel.HealthModel;
 import com.woopaca.noongil.domain.mlmodel.HealthModelFile;
+import com.woopaca.noongil.domain.mlmodel.HealthModelRepository;
 import com.woopaca.noongil.domain.mlmodel.HealthModelStorage;
 import com.woopaca.noongil.domain.user.User;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,12 @@ public class HealthModelService {
 
     private final HealthModelStorage healthModelStorage;
     private final UniqueNameGenerator uniqueNameGenerator;
+    private final HealthModelRepository healthModelRepository;
 
-    public HealthModelService(HealthModelStorage healthModelStorage) {
+    public HealthModelService(HealthModelStorage healthModelStorage, HealthModelRepository healthModelRepository) {
         this.healthModelStorage = healthModelStorage;
         this.uniqueNameGenerator = new UniqueNameGenerator();
+        this.healthModelRepository = healthModelRepository;
     }
 
     @Transactional
@@ -26,7 +30,19 @@ public class HealthModelService {
         String modelName = uniqueNameGenerator.generate(email);
         HealthModelFile healthModelFile = HealthModelFile.of(multipartFile, modelName);
 
-        // TODO: DB에 모델 정보 업데이트
+        healthModelRepository.findByUserId(authenticatedUser.getId())
+                .ifPresentOrElse(
+                        existingModel -> {
+                            existingModel.changeModelName(modelName);
+                        },
+                        () -> {
+                            HealthModel healthModel = HealthModel.builder()
+                                    .modelName(modelName)
+                                    .userId(authenticatedUser.getId())
+                                    .build();
+                            healthModelRepository.save(healthModel);
+                        }
+                );
         return healthModelStorage.store(healthModelFile);
     }
 }

@@ -7,6 +7,7 @@ import com.woopaca.noongil.web.dto.ChangeNotificationRequest;
 import com.woopaca.noongil.web.dto.EmergencyContactListResponse;
 import com.woopaca.noongil.web.dto.RegisterEmergencyContactRequest;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +49,11 @@ public class EmergencyContactController {
                                                 @PathVariable("contactId") Long contactId) {
         emergencyContactService.changeNotification(contactId, request.notification());
         return ApiResults.success("알림 설정이 변경되었습니다.", null);
+    }
+
+    @DeleteMapping("/{contactId}")
+    public ApiResponse<Void> delete(@PathVariable("contactId") Long contactId) {
+        emergencyContactService.deleteEmergencyContact(contactId);
+        return ApiResults.success("비상연락망이 삭제되었습니다.", null);
     }
 }

@@ -1,6 +1,7 @@
 package com.woopaca.noongil.infrastructure.notification;
 
 import com.eatthepath.pushy.apns.ApnsClient;
+import com.eatthepath.pushy.apns.util.SimpleApnsPayloadBuilder;
 import com.eatthepath.pushy.apns.util.SimpleApnsPushNotification;
 import com.woopaca.noongil.infrastructure.apple.AppleProperties;
 import org.springframework.context.annotation.Profile;
@@ -18,7 +19,7 @@ public class ApnsPushNotificationSender implements PushNotificationSender {
         this.appleProperties = appleProperties;
     }
 
-    public void test() {
-        new SimpleApnsPushNotification("pushToken", appleProperties.getClientId(), null);
+    public void send(String pushToken) {
+
     }
 }

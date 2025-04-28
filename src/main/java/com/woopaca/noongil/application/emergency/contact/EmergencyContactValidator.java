@@ -45,4 +45,10 @@ public class EmergencyContactValidator {
             throw new IllegalArgumentException("비상연락망 등록이 승인되지 않았습니다.");
         }
     }
+
+    public void validateDeleteEmergencyContact(EmergencyContact emergencyContact, User authenticatedUser) {
+        if (!Objects.equals(emergencyContact.getUserId(), authenticatedUser.getId())) {
+            throw new IllegalArgumentException("비상연락망 등록자가 아닙니다.");
+        }
+    }
 }

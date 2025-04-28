@@ -59,7 +59,7 @@ public class AppleClientSecretGenerator {
                 .withIssuedAt(currentDate)
                 .withExpiresAt(currentDate.toInstant().plusSeconds(60))
                 .withAudience("https://appleid.apple.com")
-                .withSubject(appleProperties.getClientId())
+                .withSubject(appleProperties.getBundleId())
                 .sign(algorithm);
     }
 }

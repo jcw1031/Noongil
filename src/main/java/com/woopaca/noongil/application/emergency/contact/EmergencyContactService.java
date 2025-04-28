@@ -71,4 +71,16 @@ public class EmergencyContactService {
         emergencyContact.changeNotification(notification);
         emergencyContactRepository.save(emergencyContact);
     }
+
+    public void deleteEmergencyContact(Long contactId) {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        userRepository.acquireExclusiveLock(authenticatedUser.getId());
+        userValidator.validateActiveUser(authenticatedUser);
+
+        EmergencyContact emergencyContact = emergencyContactRepository.findById(contactId)
+                .orElseThrow(() -> new IllegalArgumentException("비상연락망이 존재하지 않습니다. contactId: " + contactId));
+        emergencyContactValidator.validateDeleteEmergencyContact(emergencyContact, authenticatedUser);
+
+        emergencyContactRepository.delete(emergencyContact);
+    }
 }

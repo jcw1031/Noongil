@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "apple")
 public class AppleProperties {
 
-    private String clientId;
+    private String bundleId;
     private String teamId;
     private String privateKeyId;
     private String privateKeyPath;

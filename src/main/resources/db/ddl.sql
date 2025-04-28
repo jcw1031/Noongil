@@ -29,6 +29,8 @@ CREATE INDEX idx_borough ON program (borough);
 
 CREATE SPATIAL INDEX sidx_location ON program (location);
 
+CREATE INDEX idx_program_start_date ON program (program_start_date);
+
 CREATE TABLE emergency_contact
 (
     id              BIGINT                                         NOT NULL AUTO_INCREMENT,
@@ -84,7 +86,7 @@ CREATE INDEX idx_updated_at ON emergency_notification (updated_at);
 CREATE TABLE health_model
 (
     id         BIGINT       NOT NULL AUTO_INCREMENT,
-    name       VARCHAR(128) NOT NULL,
+    model_name VARCHAR(128) NOT NULL,
     user_id    BIGINT       NOT NULL,
     created_at DATETIME(3) DEFAULT NOW(3),
     updated_at DATETIME(3) DEFAULT NOW(3),
@@ -93,13 +95,19 @@ CREATE TABLE health_model
 
 CREATE UNIQUE INDEX uidx_user_id ON health_model (user_id);
 
-CREATE TABLE user_activity
+CREATE TABLE activity
 (
-    id         BIGINT NOT NULL AUTO_INCREMENT,
-    user_id    BIGINT NOT NULL,
-    created_at DATETIME(3) DEFAULT NOW(3),
-    updated_at DATETIME(3) DEFAULT NOW(3),
+    id            BIGINT  NOT NULL AUTO_INCREMENT,
+    steps_count   INT     NOT NULL,
+    activity_date DATE    NOT NULL,
+    holiday       BOOLEAN NOT NULL,
+    day_of_week   INT     NOT NULL,
+    user_id       BIGINT  NOT NULL,
+    created_at    DATETIME(3) DEFAULT NOW(3),
+    updated_at    DATETIME(3) DEFAULT NOW(3),
     PRIMARY KEY (id)
 );
 
-CREATE INDEX idx_user_activity ON user_activity (user_id);
+CREATE INDEX idx_user_id ON activity (user_id);
+
+CREATE INDEX idx_activity_date ON activity (activity_date);

@@ -31,7 +31,7 @@ public class AppleOAuth2Client extends OAuth2Client {
     @Override
     public OAuth2Token requestToken(String authorizationCode) {
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("client_id", appleProperties.getClientId());
+        requestBody.add("client_id", appleProperties.getBundleId());
         requestBody.add("client_secret", appleClientSecretGenerator.generateClientSecret());
         requestBody.add("code", authorizationCode);
         requestBody.add("grant_type", GRANT_TYPE);

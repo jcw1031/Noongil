@@ -20,7 +20,23 @@ import java.security.NoSuchAlgorithmException;
 public class ApplePushConfiguration {
 
     @Bean
-    @Profile({"production", "develop", "local-develop"})
+    @Profile({"develop", "local-develop"})
+    public ApnsClient developApnsClient(AppleProperties appleProperties) {
+        try (InputStream resourceAsStream = new ClassPathResource(appleProperties.getPrivateKeyPath())
+                .getInputStream()) {
+            ApnsSigningKey signingKey = ApnsSigningKey
+                    .loadFromInputStream(resourceAsStream, appleProperties.getTeamId(), appleProperties.getPrivateKeyId());
+            return new ApnsClientBuilder().setApnsServer(ApnsClientBuilder.DEVELOPMENT_APNS_HOST)
+                    .setSigningKey(signingKey)
+                    .build();
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            log.error("APNs 클라이언트를 생성하는 중 오류가 발생했습니다.", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Bean
+    @Profile("production")
     public ApnsClient apnsClient(AppleProperties appleProperties) {
         try (InputStream resourceAsStream = new ClassPathResource(appleProperties.getPrivateKeyPath())
                 .getInputStream()) {
