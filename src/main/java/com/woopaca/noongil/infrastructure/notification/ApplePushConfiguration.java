@@ -26,7 +26,7 @@ public class ApplePushConfiguration {
                 .getInputStream()) {
             ApnsSigningKey signingKey = ApnsSigningKey
                     .loadFromInputStream(resourceAsStream, appleProperties.getTeamId(), appleProperties.getPrivateKeyId());
-            return new ApnsClientBuilder().setApnsServer(ApnsClientBuilder.DEVELOPMENT_APNS_HOST)
+            return new ApnsClientBuilder().setApnsServer(ApnsClientBuilder.PRODUCTION_APNS_HOST)
                     .setSigningKey(signingKey)
                     .build();
         } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {

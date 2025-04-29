@@ -3,6 +3,7 @@ package com.woopaca.noongil.application.auth;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRegistrar;
 import com.woopaca.noongil.infrastructure.oauth2.OAuth2Client;
+import com.woopaca.noongil.infrastructure.oauth2.apple.AppleOAuth2User;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleToken;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleUserInformationExtractor;
 import com.woopaca.noongil.security.JwtProvider;
@@ -34,8 +35,8 @@ public class AuthenticationService {
             throw new IllegalArgumentException("애플 로그인에 실패했습니다.");
         }
 
-        userInformationExtractor.extractUserInfo(appleToken.idToken());
-        User registeredUser = userRegistrar.register(name, email);
+        AppleOAuth2User appleUser = userInformationExtractor.extractUserInfo(appleToken.idToken());
+        User registeredUser = userRegistrar.register(appleUser.identifier(), name, email);
         String accessToken = jwtProvider.issueAccessToken(registeredUser);
         return new SignInResult(registeredUser, accessToken);
     }

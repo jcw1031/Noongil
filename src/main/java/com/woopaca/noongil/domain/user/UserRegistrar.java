@@ -11,10 +11,10 @@ public class UserRegistrar {
         this.userRepository = userRepository;
     }
 
-    public User register(String name, String email) {
-        return userRepository.findByEmail(email)
+    public User register(String identifier, String name, String email) {
+        return userRepository.findByIdentifier(identifier)
                 .orElseGet(() -> {
-                    User signUpUser = User.signUp(name, email);
+                    User signUpUser = User.signUp(identifier, name, email);
                     return userRepository.save(signUpUser);
                 });
     }

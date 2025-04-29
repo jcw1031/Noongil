@@ -56,6 +56,7 @@ CREATE TABLE user
     id                BIGINT                                       NOT NULL AUTO_INCREMENT,
     email             VARCHAR(128)                                 NOT NULL,
     name              VARCHAR(12)                                  NOT NULL,
+    identifier        VARCHAR(48)                                  NOT NULL,
     contact           VARCHAR(12),
     status            ENUM ('PENDING', 'ACTIVE') DEFAULT 'PENDING' NOT NULL,
     push_token        VARCHAR(1024),
@@ -67,6 +68,8 @@ CREATE TABLE user
 );
 
 CREATE UNIQUE INDEX uidx_email ON user (email);
+
+CREATE UNIQUE INDEX uidx_identifier ON user (identifier);
 
 CREATE UNIQUE INDEX uidx_contact ON user (contact);
 

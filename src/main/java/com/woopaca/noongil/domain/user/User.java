@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 @Entity
 @Table(name = "user", indexes = {
         @Index(name = "uidx_email", columnList = "email", unique = true),
+        @Index(name = "uidx_identifier", columnList = "identifier", unique = true),
         @Index(name = "uidx_contact", columnList = "contact", unique = true)
 })
 public class User extends BaseEntity {
@@ -24,6 +25,9 @@ public class User extends BaseEntity {
 
     @Column(nullable = false, length = 12)
     private String name;
+
+    @Column(nullable = false, length = 48, unique = true)
+    private String identifier;
 
     @Column(nullable = false, length = 12)
     private String contact;
@@ -43,19 +47,21 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(String email, String name, String contact, AccountStatus status, String pushToken, boolean pushNotification) {
+    public User(String email, String name, String identifier, String contact, AccountStatus status, String pushToken, boolean pushNotification) {
         this.email = email;
         this.name = name;
+        this.identifier = identifier;
         this.contact = contact;
         this.status = status;
         this.pushToken = pushToken;
         this.pushNotification = pushNotification;
     }
 
-    public static User signUp(String name, String email) {
+    public static User signUp(String identifier, String name, String email) {
         return User.builder()
                 .name(name)
                 .email(email)
+                .identifier(identifier)
                 .status(AccountStatus.PENDING)
                 .build();
     }

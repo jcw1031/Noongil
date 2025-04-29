@@ -25,10 +25,10 @@ class ApnsPushNotificationSenderTest {
 
     @Test
     void send() throws InterruptedException {
-        String pushToken = "599324fc91d17a8315f06cabce9e8fa8e717001c427cb20cc951c7429b73ed2e";
+        String pushToken = "e3da402bd00d5f9189783d2dcbc66f832fae3785d58961852e54c62b62968e3b";
         String payload = new SimpleApnsPayloadBuilder()
-                .setAlertTitle("화이팅입니다 정훈님")
-                .setAlertBody("")
+                .setAlertTitle("테스트")
+                .setAlertBody("ㅎㅇ")
                 .setSound(SimpleApnsPayloadBuilder.DEFAULT_SOUND_FILENAME)
                 .addCustomProperty("navigateTo", "emergency")
                 .build();

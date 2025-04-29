@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void acquireExclusiveLock(Long id);
 
     Optional<User> findByContact(String contact);
+
+    Optional<User> findByIdentifier(String identifier);
 }
