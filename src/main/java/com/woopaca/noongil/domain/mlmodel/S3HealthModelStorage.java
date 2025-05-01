@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Component
-@Profile("!local")
+//@Profile("!local")
 public class S3HealthModelStorage implements HealthModelStorage {
 
     private static final String HEALTH_MODEL_S3_PREFIX = "models/";
@@ -51,7 +51,8 @@ public class S3HealthModelStorage implements HealthModelStorage {
     }
 
     @Override
-    public void delete() {
-
+    public void delete(String modelName) {
+        String key = HEALTH_MODEL_S3_PREFIX + modelName + HealthModelFile.EXTENSION;
+        s3Client.deleteObject(builder -> builder.bucket(awsConfiguration.getS3Bucket()).key(key));
     }
 }

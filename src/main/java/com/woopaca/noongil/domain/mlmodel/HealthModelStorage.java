@@ -4,5 +4,5 @@ public interface HealthModelStorage {
 
     String store(HealthModelFile healthModelFile);
 
-    void delete();
+    void delete(String modelName);
 }

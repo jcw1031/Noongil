@@ -10,7 +10,7 @@ import java.io.InputStream;
 @Getter
 public class HealthModelFile implements Closeable {
 
-    private static final String EXTENSION = ".mlmodel";
+    public static final String EXTENSION = ".mlmodel";
 
     private final String fileName;
     private final InputStream inputStream;
