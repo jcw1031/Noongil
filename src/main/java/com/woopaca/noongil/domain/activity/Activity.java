@@ -39,4 +39,10 @@ public class Activity extends BaseEntity {
         this.dayOfWeek = dayOfWeek;
         this.userId = userId;
     }
+
+    public void updateStepsCount(int stepsCount) {
+        if (stepsCount != 0) {
+            this.stepsCount = stepsCount;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.woopaca.noongil.domain.mlmodel;
 
 import com.woopaca.noongil.infrastructure.config.AWSConfiguration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Component
+@Profile("!local")
 public class S3HealthModelStorage implements HealthModelStorage {
 
     private static final String HEALTH_MODEL_S3_PREFIX = "models/";
