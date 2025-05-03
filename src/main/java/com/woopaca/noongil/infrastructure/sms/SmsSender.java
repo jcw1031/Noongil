@@ -1,35 +1,6 @@
 package com.woopaca.noongil.infrastructure.sms;
 
-import lombok.extern.slf4j.Slf4j;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.service.DefaultMessageService;
-import org.springframework.stereotype.Component;
+public interface SmsSender {
 
-@Slf4j
-@Component
-public class SmsSender {
-
-    private final SmsConfiguration smsConfiguration;
-    private final DefaultMessageService messageService;
-
-    public SmsSender(SmsConfiguration smsConfiguration, DefaultMessageService messageService) {
-        this.smsConfiguration = smsConfiguration;
-        this.messageService = messageService;
-    }
-
-    public void sendSms(String phoneNumber, String messageText) {
-        Message message = createMessage(phoneNumber, messageText);
-        SingleMessageSendingRequest request = new SingleMessageSendingRequest(message);
-        messageService.sendOne(request);
-        log.info("SMS 전송 - phoneNumber: {}", phoneNumber);
-    }
-
-    private Message createMessage(String phoneNumber, String messageText) {
-        Message message = new Message();
-        message.setFrom(smsConfiguration.getSenderNumber());
-        message.setTo(phoneNumber);
-        message.setText(messageText);
-        return message;
-    }
+    void send(String phoneNumber, String messageText);
 }

@@ -6,6 +6,7 @@ import com.woopaca.noongil.domain.safety.Safety;
 import com.woopaca.noongil.domain.safety.SafetyRepository;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
+import com.woopaca.noongil.infrastructure.sms.SmsSender;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -19,12 +20,14 @@ public class SafetyStatusChanger {
     private final UserRepository userRepository;
     private final EmergencyContactRepository emergencyContactRepository;
     private final SafetyNotificationSender safetyNotificationSender;
+    private final SmsSender smsSender;
 
-    public SafetyStatusChanger(SafetyRepository safetyRepository, UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, SafetyNotificationSender safetyNotificationSender) {
+    public SafetyStatusChanger(SafetyRepository safetyRepository, UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, SafetyNotificationSender safetyNotificationSender, SmsSender smsSender) {
         this.safetyRepository = safetyRepository;
         this.userRepository = userRepository;
         this.emergencyContactRepository = emergencyContactRepository;
         this.safetyNotificationSender = safetyNotificationSender;
+        this.smsSender = smsSender;
     }
 
     @Transactional
@@ -33,7 +36,7 @@ public class SafetyStatusChanger {
         safetyRepository.save(safety);
         Collection<EmergencyContact> emergencyContacts = emergencyContactRepository.findByUserId(safety.getUserId());
         if (CollectionUtils.isEmpty(emergencyContacts)) {
-            // TODO: 눈길 CS 센터 연락
+            changeToDanger(safety);
         }
 
         User user = userRepository.findById(safety.getUserId())
@@ -51,5 +54,11 @@ public class SafetyStatusChanger {
         safety.toDanger();
         safetyRepository.save(safety);
         // TODO: 눈길 CS 센터 연락
+    }
+
+    @Transactional
+    public void changeToComplete(Safety safety) {
+        safety.toComplete();
+        safetyRepository.save(safety);
     }
 }

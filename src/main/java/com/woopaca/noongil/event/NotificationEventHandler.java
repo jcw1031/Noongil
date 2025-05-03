@@ -34,6 +34,6 @@ public class NotificationEventHandler {
         String message = REGISTER_EMERGENCY_CONTACT_MESSAGE
                 .replace("{name}", event.name())
                 .replace("{url}", "https://naver.com");
-        smsSender.sendSms(event.contact(), message);
+        smsSender.send(event.contact(), message);
     }
 }

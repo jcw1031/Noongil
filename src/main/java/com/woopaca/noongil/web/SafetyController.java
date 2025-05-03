@@ -4,8 +4,11 @@ import com.woopaca.noongil.application.activity.SafetyService;
 import com.woopaca.noongil.domain.safety.SafetyStatus;
 import com.woopaca.noongil.web.dto.ApiResults;
 import com.woopaca.noongil.web.dto.ApiResults.ApiResponse;
+import com.woopaca.noongil.web.dto.ContactSafetyRequest;
 import com.woopaca.noongil.web.dto.RegisterInferenceResultRequest;
+import com.woopaca.noongil.web.dto.ResponseSafetyRequest;
 import com.woopaca.noongil.web.dto.SafetyStatusResponse;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,5 +38,17 @@ public class SafetyController {
     public ApiResponse<Void> registerInferenceResult(@RequestBody RegisterInferenceResultRequest request) {
         safetyService.checkSafety(request.result());
         return ApiResults.success("모델 결과가 등록되었습니다.", null);
+    }
+
+    @PostMapping("/response") // 사용자의 "괜찮아요" 응답
+    public ApiResponse<Void> responseSafety(@RequestBody ResponseSafetyRequest request) {
+        safetyService.responseSafety(request.response());
+        return ApiResults.success("모델 결과가 등록되었습니다.", null);
+    }
+
+    @PostMapping("/contact")
+    public ApiResponse<Void> contactSafety(@RequestBody @Validated ContactSafetyRequest request) {
+        safetyService.contactSafety(request.contact());
+        return ApiResults.success("비상연락망에 연락을 시도했습니다.", null);
     }
 }

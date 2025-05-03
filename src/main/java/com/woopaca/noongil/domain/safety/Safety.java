@@ -49,4 +49,10 @@ public class Safety extends BaseEntity {
             this.status = SafetyStatus.DANGER;
         }
     }
+
+    public void toComplete() {
+        if (status.ordinal() < SafetyStatus.COMPLETE.ordinal()) {
+            this.status = SafetyStatus.COMPLETE;
+        }
+    }
 }
