@@ -73,19 +73,6 @@ CREATE UNIQUE INDEX uidx_identifier ON user (identifier);
 
 CREATE UNIQUE INDEX uidx_contact ON user (contact);
 
-CREATE TABLE emergency_notification
-(
-    id          BIGINT                                   NOT NULL AUTO_INCREMENT,
-    status      ENUM ('CREATED', 'WAITING', 'COMPLETED') NOT NULL,
-    sender_id   BIGINT                                   NOT NULL,
-    receiver_id BIGINT                                   NOT NULL,
-    created_at  DATETIME(3) DEFAULT NOW(3),
-    updated_at  DATETIME(3) DEFAULT NOW(3),
-    PRIMARY KEY (id)
-);
-
-CREATE INDEX idx_updated_at ON emergency_notification (updated_at);
-
 CREATE TABLE health_model
 (
     id         BIGINT       NOT NULL AUTO_INCREMENT,
@@ -114,3 +101,17 @@ CREATE TABLE activity
 CREATE INDEX idx_user_id ON activity (user_id);
 
 CREATE INDEX idx_activity_date ON activity (activity_date);
+
+CREATE TABLE safety
+(
+    id         BIGINT                                NOT NULL AUTO_INCREMENT,
+    status     ENUM ('CAUTION', 'WARNING', 'DANGER', 'COMPLETE') NOT NULL,
+    user_id    BIGINT                                NOT NULL,
+    created_at DATETIME(3) DEFAULT NOW(3),
+    updated_at DATETIME(3) DEFAULT NOW(3),
+    PRIMARY KEY (id)
+);
+
+CREATE INDEX idx_user_id ON safety (user_id);
+
+CREATE INDEX idx_updated_at ON safety (updated_at);

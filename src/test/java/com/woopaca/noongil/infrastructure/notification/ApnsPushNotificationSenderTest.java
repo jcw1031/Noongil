@@ -30,20 +30,11 @@ class ApnsPushNotificationSenderTest {
                 .setAlertTitle("테스트")
                 .setAlertBody("ㅎㅇ")
                 .setSound(SimpleApnsPayloadBuilder.DEFAULT_SOUND_FILENAME)
-                .addCustomProperty("navigateTo", "emergency")
+                .addCustomProperty("category", "emergency")
                 .build();
         log.info("payload: {}", payload);
 
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(pushToken, appleProperties.getBundleId(), payload);
-        apnsClient.sendNotification(pushNotification)
-                .whenComplete((result, error) -> {
-                    if (error != null) {
-                        log.error("Error sending push notification: {}", error.getMessage());
-                    } else {
-                        log.info("Push notification sent successfully: {}", result);
-                    }
-                });
-
-        Thread.sleep(2_000L);
+        apnsClient.sendNotification(pushNotification);
     }
 }
