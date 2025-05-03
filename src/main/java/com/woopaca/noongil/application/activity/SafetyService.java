@@ -28,14 +28,14 @@ public class SafetyService {
         this.safetyStatusChanger = safetyStatusChanger;
     }
 
-    @Transactional
-    public void checkSafety(double inferenceResult) {
+    public SafetyStatus getUserSafetyStatus() {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
-        if (inferenceResult < THRESHOLD) {
-            Safety cautionSafety = Safety.caution(authenticatedUser.getId());
-            safetyRepository.save(cautionSafety);
-            safetyNotificationSender.sendSafetyNotification(authenticatedUser);
-        }
+        LocalDateTime startOfToday = LocalDate.now()
+                .atStartOfDay();
+        return safetyRepository
+                .findByUpdatedAtIsGreaterThanEqualAndUserId(startOfToday, authenticatedUser.getId())
+                .map(Safety::getStatus)
+                .orElse(null);
     }
 
     public void automaticChangeSafetyStatus() {
@@ -47,13 +47,26 @@ public class SafetyService {
                 .forEach(safety -> {
                     SafetyStatus status = safety.getStatus();
                     LocalDateTime updatedAt = safety.getUpdatedAt();
-                    Duration duration = Duration.between(currentDateTime, updatedAt);
-                    if (duration.toHours() >= SAFETY_RESPONSE_LIMIT_DURATION) {
+                    if (isSafetyResponseTimeout(currentDateTime, updatedAt)) {
                         switch (status) {
                             case CAUTION -> safetyStatusChanger.changeToWarning(safety);
                             case WARNING -> safetyStatusChanger.changeToDanger(safety);
                         }
                     }
                 });
+    }
+
+    private boolean isSafetyResponseTimeout(LocalDateTime currentDateTime, LocalDateTime updatedAt) {
+        return Duration.between(currentDateTime, updatedAt).toHours() >= SAFETY_RESPONSE_LIMIT_DURATION;
+    }
+
+    @Transactional
+    public void checkSafety(double inferenceResult) {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        if (inferenceResult < THRESHOLD) { // TODO: AI 모델 추론 결과가 어떻게 나오는지 파악 후 수정
+            Safety cautionSafety = Safety.caution(authenticatedUser.getId());
+            safetyRepository.save(cautionSafety);
+            safetyNotificationSender.sendSafetyNotification(authenticatedUser);
+        }
     }
 }

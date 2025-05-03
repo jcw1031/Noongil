@@ -31,13 +31,13 @@ public class SafetyStatusChanger {
     public void changeToWarning(Safety safety) {
         safety.toWarning();
         safetyRepository.save(safety);
-        User user = userRepository.findById(safety.getUserId())
-                .orElseThrow();
         Collection<EmergencyContact> emergencyContacts = emergencyContactRepository.findByUserId(safety.getUserId());
         if (CollectionUtils.isEmpty(emergencyContacts)) {
             // TODO: 눈길 CS 센터 연락
         }
 
+        User user = userRepository.findById(safety.getUserId())
+                .orElseThrow();
         emergencyContacts.stream()
                 .filter(EmergencyContact::isNotification)
                 .map(EmergencyContact::getContactUserId)
