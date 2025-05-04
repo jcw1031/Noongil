@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByContact(String contact);
 
     Optional<User> findByIdentifier(String identifier);
+
+    Collection<User> findByName(String name);
 }
