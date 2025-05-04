@@ -13,4 +13,6 @@ public interface SafetyRepository extends JpaRepository<Safety, Long> {
     Collection<Safety> findByUpdatedAtIsGreaterThanEqual(LocalDateTime updatedAt);
 
     Optional<Safety> findByUpdatedAtIsGreaterThanEqualAndUserId(LocalDateTime updatedAt, Long userId);
+
+    Optional<Safety> findTopByUserIdOrderByCreatedAtDesc(Long userId);
 }

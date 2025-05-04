@@ -58,6 +58,9 @@ public class User extends BaseEntity {
     }
 
     public static User signUp(String identifier, String name, String email) {
+        if (!StringUtils.hasText(name) || !StringUtils.hasText(email)) {
+            throw new IllegalArgumentException("name과 email 필수입니다. name: " + name + ", email: " + email);
+        }
         return User.builder()
                 .name(name)
                 .email(email)

@@ -1,10 +1,13 @@
 package com.woopaca.noongil.web;
 
 import com.woopaca.noongil.application.activity.SafetyService;
+import com.woopaca.noongil.domain.safety.Safety;
+import com.woopaca.noongil.domain.safety.SafetyRepository;
 import com.woopaca.noongil.domain.safety.SafetyStatus;
 import com.woopaca.noongil.web.dto.ApiResults;
 import com.woopaca.noongil.web.dto.ApiResults.ApiResponse;
 import com.woopaca.noongil.web.dto.ContactSafetyRequest;
+import com.woopaca.noongil.web.dto.LastSafetyDateResponse;
 import com.woopaca.noongil.web.dto.RegisterInferenceResultRequest;
 import com.woopaca.noongil.web.dto.ResponseSafetyRequest;
 import com.woopaca.noongil.web.dto.SafetyStatusResponse;
@@ -15,14 +18,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/v1/safety")
 public class SafetyController {
 
     private final SafetyService safetyService;
+    private final SafetyRepository safetyRepository;
 
-    public SafetyController(SafetyService safetyService) {
+    public SafetyController(SafetyService safetyService, SafetyRepository safetyRepository) {
         this.safetyService = safetyService;
+        this.safetyRepository = safetyRepository;
     }
 
     @GetMapping
@@ -50,5 +58,14 @@ public class SafetyController {
     public ApiResponse<Void> contactSafety(@RequestBody @Validated ContactSafetyRequest request) {
         safetyService.contactSafety(request.contact());
         return ApiResults.success("비상연락망에 연락을 시도했습니다.", null);
+    }
+
+    @GetMapping("/last-date")
+    public ApiResponse<LastSafetyDateResponse> getLastSafetyDate() {
+        LocalDate lastSafetyDate = safetyService.findUserLastSafety()
+                .map(Safety::getCreatedAt)
+                .map(LocalDateTime::toLocalDate)
+                .orElse(null);
+        return ApiResults.success(new LastSafetyDateResponse(lastSafetyDate));
     }
 }

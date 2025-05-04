@@ -13,12 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class SafetyService {
 
     private static final double THRESHOLD = 0.7;
-    private static final int SAFETY_RESPONSE_LIMIT_DURATION = 6;
+    private static final int SAFETY_RESPONSE_LIMIT_DURATION_MINUTES = 5;
 
     private final SafetyRepository safetyRepository;
     private final SafetyNotificationSender safetyNotificationSender;
@@ -63,7 +64,7 @@ public class SafetyService {
     }
 
     private boolean isSafetyResponseTimeout(LocalDateTime currentDateTime, LocalDateTime updatedAt) {
-        return Duration.between(currentDateTime, updatedAt).toHours() >= SAFETY_RESPONSE_LIMIT_DURATION;
+        return Duration.between(currentDateTime, updatedAt).toMinutes() >= SAFETY_RESPONSE_LIMIT_DURATION_MINUTES;
     }
 
     @Transactional
@@ -116,5 +117,10 @@ public class SafetyService {
         if (!hasEmergencyContact) {
             throw new IllegalArgumentException("비상연락망에 등록된 사용자가 아닙니다. \"연락했어요\" 응답이 유효하지 않습니다.");
         }
+    }
+
+    public Optional<Safety> findUserLastSafety() {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        return safetyRepository.findTopByUserIdOrderByCreatedAtDesc(authenticatedUser.getId());
     }
 }

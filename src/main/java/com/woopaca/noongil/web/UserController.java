@@ -1,12 +1,17 @@
 package com.woopaca.noongil.web;
 
+import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
 import com.woopaca.noongil.application.user.UserService;
+import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.web.dto.ApiResults;
 import com.woopaca.noongil.web.dto.ApiResults.ApiResponse;
 import com.woopaca.noongil.web.dto.ChangeConsentsRequest;
 import com.woopaca.noongil.web.dto.RegisterContactRequest;
 import com.woopaca.noongil.web.dto.RegisterPushTokenRequest;
+import com.woopaca.noongil.web.dto.UserInfoResponse;
+import com.woopaca.noongil.web.dto.UserInfoResponse.Consents;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,5 +44,16 @@ public class UserController {
     public ApiResponse<Void> changeUserConsents(@RequestBody @Validated ChangeConsentsRequest request) {
         userService.updateUserConsents(request.push(), request.sms());
         return ApiResults.success("수신 동의가 변경되었습니다.", null);
+    }
+
+    @GetMapping
+    public ApiResponse<UserInfoResponse> getUserInfo() {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        UserInfoResponse response = UserInfoResponse.builder()
+                .name(authenticatedUser.getName())
+                .email(authenticatedUser.getEmail())
+                .consents(new Consents(authenticatedUser.isPushNotification(), authenticatedUser.isSmsNotification()))
+                .build();
+        return ApiResults.success(response);
     }
 }
