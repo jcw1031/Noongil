@@ -1,7 +1,6 @@
 package com.woopaca.noongil.domain.mlmodel;
 
 import com.woopaca.noongil.infrastructure.config.AWSConfiguration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.sync.RequestBody;

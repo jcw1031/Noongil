@@ -2,7 +2,6 @@ package com.woopaca.noongil.web;
 
 import com.woopaca.noongil.application.activity.SafetyService;
 import com.woopaca.noongil.domain.safety.Safety;
-import com.woopaca.noongil.domain.safety.SafetyRepository;
 import com.woopaca.noongil.domain.safety.SafetyStatus;
 import com.woopaca.noongil.web.dto.ApiResults;
 import com.woopaca.noongil.web.dto.ApiResults.ApiResponse;
@@ -26,11 +25,9 @@ import java.time.LocalDateTime;
 public class SafetyController {
 
     private final SafetyService safetyService;
-    private final SafetyRepository safetyRepository;
 
-    public SafetyController(SafetyService safetyService, SafetyRepository safetyRepository) {
+    public SafetyController(SafetyService safetyService) {
         this.safetyService = safetyService;
-        this.safetyRepository = safetyRepository;
     }
 
     @GetMapping

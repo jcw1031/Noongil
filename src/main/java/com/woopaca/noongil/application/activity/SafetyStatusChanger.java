@@ -6,7 +6,6 @@ import com.woopaca.noongil.domain.safety.Safety;
 import com.woopaca.noongil.domain.safety.SafetyRepository;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
-import com.woopaca.noongil.infrastructure.sms.SmsSender;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -20,14 +19,12 @@ public class SafetyStatusChanger {
     private final UserRepository userRepository;
     private final EmergencyContactRepository emergencyContactRepository;
     private final SafetyNotificationSender safetyNotificationSender;
-    private final SmsSender smsSender;
 
-    public SafetyStatusChanger(SafetyRepository safetyRepository, UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, SafetyNotificationSender safetyNotificationSender, SmsSender smsSender) {
+    public SafetyStatusChanger(SafetyRepository safetyRepository, UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, SafetyNotificationSender safetyNotificationSender) {
         this.safetyRepository = safetyRepository;
         this.userRepository = userRepository;
         this.emergencyContactRepository = emergencyContactRepository;
         this.safetyNotificationSender = safetyNotificationSender;
-        this.smsSender = smsSender;
     }
 
     @Transactional

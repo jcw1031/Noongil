@@ -7,6 +7,7 @@ import com.woopaca.noongil.domain.emergencycontact.EmergencyContactRepository;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
 import com.woopaca.noongil.event.NotificationEventPublisher;
+import com.woopaca.noongil.infrastructure.notification.PushNotificationSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +21,15 @@ public class EmergencyContactService {
     private final EmergencyContactValidator emergencyContactValidator;
     private final NotificationEventPublisher notificationEventPublisher;
     private final UserValidator userValidator;
+    private final PushNotificationSender pushNotificationSender;
 
-    public EmergencyContactService(UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, EmergencyContactValidator emergencyContactValidator, NotificationEventPublisher notificationEventPublisher, UserValidator userValidator) {
+    public EmergencyContactService(UserRepository userRepository, EmergencyContactRepository emergencyContactRepository, EmergencyContactValidator emergencyContactValidator, NotificationEventPublisher notificationEventPublisher, UserValidator userValidator, PushNotificationSender pushNotificationSender) {
         this.userRepository = userRepository;
         this.emergencyContactRepository = emergencyContactRepository;
         this.emergencyContactValidator = emergencyContactValidator;
         this.notificationEventPublisher = notificationEventPublisher;
         this.userValidator = userValidator;
+        this.pushNotificationSender = pushNotificationSender;
     }
 
     @Transactional
@@ -47,6 +50,8 @@ public class EmergencyContactService {
         EmergencyContact emergencyContact = EmergencyContact
                 .accepted(name, contact, authenticatedUser.getId(), otherUser.getId());
         emergencyContactRepository.save(emergencyContact);
+        pushNotificationSender.send(otherUser.getPushToken(), "비상연락망 등록 알림",
+                String.format("%s님이 당신을 비상연락망으로 등록했어요.", authenticatedUser.getName()));
     }
 
     private void handleUnregisteredUser(String name, String contact, User authenticatedUser) {
