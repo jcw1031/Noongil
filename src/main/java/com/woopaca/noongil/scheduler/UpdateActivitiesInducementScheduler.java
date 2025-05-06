@@ -4,11 +4,13 @@ import com.woopaca.noongil.domain.user.AccountStatus;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
 import com.woopaca.noongil.infrastructure.notification.ApnsPushNotificationSender;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+@Profile({"production", "develop", "local-develop"})
 @Component
 public class UpdateActivitiesInducementScheduler {
 
