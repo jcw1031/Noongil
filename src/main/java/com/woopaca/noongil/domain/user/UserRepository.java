@@ -23,4 +23,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByIdentifier(String identifier);
 
     Collection<User> findByName(String name);
+
+    @Query("""
+            SELECT u.pushToken
+            FROM User u
+            WHERE u.status = :status
+            """)
+    Collection<String> findPushTokensByStatus(AccountStatus status);
+
+    Collection<User> findByStatus(AccountStatus status);
 }

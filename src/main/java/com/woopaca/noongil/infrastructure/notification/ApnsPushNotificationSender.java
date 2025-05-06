@@ -34,4 +34,15 @@ public class ApnsPushNotificationSender implements PushNotificationSender {
                     log.info("APNs 푸시 전송 response: {}", response, throwable);
                 });
     }
+
+    public void sendBackgroundUpdatesPush(String pushToken) {
+        String payload = new SimpleApnsPayloadBuilder()
+                .setContentAvailable(true)
+                .build();
+        SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(pushToken, appleProperties.getBundleId(), payload);
+        apnsClient.sendNotification(pushNotification)
+                .whenComplete((response, throwable) -> {
+                    log.info("APNs 백그라운드 업데이트 푸시 전송 response: {}", response, throwable);
+                });
+    }
 }
