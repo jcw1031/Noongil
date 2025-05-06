@@ -22,6 +22,4 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
             WHERE a.activityDate >= :startDate
             """)
     Collection<Long> findRecentActivitiesUserIds(@Param("startDate") LocalDate startDate);
-
-    Collection<Activity> findByActivityDateIsGreaterThanEqual(LocalDate startDate);
 }
