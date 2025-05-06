@@ -4,12 +4,14 @@ import com.woopaca.noongil.domain.activity.ActivityRepository;
 import com.woopaca.noongil.infrastructure.sqs.SqsMessageSender;
 import com.woopaca.noongil.infrastructure.sqs.TrainHealthModelMessage;
 import com.woopaca.noongil.infrastructure.sqs.TrainHealthModelMessage.ActivityMessage;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Profile({"production", "develop", "local-develop"})
 @Component
 public class HealthModelTrainingScheduler {
 
