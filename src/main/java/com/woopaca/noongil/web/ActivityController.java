@@ -1,9 +1,13 @@
 package com.woopaca.noongil.web;
 
 import com.woopaca.noongil.application.activity.ActivityService;
+import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
 import com.woopaca.noongil.application.mlmodel.HealthModelService;
+import com.woopaca.noongil.domain.activity.ActivityRepository;
 import com.woopaca.noongil.domain.mlmodel.HealthModel;
 import com.woopaca.noongil.domain.mlmodel.HealthModelFile;
+import com.woopaca.noongil.domain.user.User;
+import com.woopaca.noongil.web.dto.ActivityListResponse;
 import com.woopaca.noongil.web.dto.ActivityModelResponse;
 import com.woopaca.noongil.web.dto.ApiResults;
 import com.woopaca.noongil.web.dto.ApiResults.ApiResponse;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -28,6 +33,7 @@ public class ActivityController {
 
     private final ActivityService activityService;
     private final HealthModelService healthModelService;
+    private final ActivityRepository activityRepository;
 
     @Value("${aws.cloud-front-domain}")
     private String cloudFrontDomain;
@@ -35,9 +41,10 @@ public class ActivityController {
     @Value("${secret.key}")
     private String secretKey;
 
-    public ActivityController(ActivityService activityService, HealthModelService healthModelService) {
+    public ActivityController(ActivityService activityService, HealthModelService healthModelService, ActivityRepository activityRepository) {
         this.activityService = activityService;
         this.healthModelService = healthModelService;
+        this.activityRepository = activityRepository;
     }
 
     @PostMapping
@@ -64,6 +71,16 @@ public class ActivityController {
         LocalDate updatedAt = model.getUpdatedAt().toLocalDate();
         String url = String.join("/", cloudFrontDomain, "models/" + model.getModelName() + HealthModelFile.EXTENSION);
         ActivityModelResponse response = new ActivityModelResponse(updatedAt, url);
+        return ApiResults.success(response);
+    }
+
+    @GetMapping
+    public ApiResponse<Collection<ActivityListResponse>> getActivities() {
+        User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
+        List<ActivityListResponse> response = activityRepository.findByUserIdAndActivityDateIsGreaterThanEqual(authenticatedUser.getId(), LocalDate.now().minusDays(30))
+                .stream()
+                .map(ActivityListResponse::from)
+                .toList();
         return ApiResults.success(response);
     }
 }

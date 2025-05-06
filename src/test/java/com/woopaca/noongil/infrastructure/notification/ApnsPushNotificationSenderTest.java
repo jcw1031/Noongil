@@ -24,8 +24,8 @@ class ApnsPushNotificationSenderTest {
     private ApnsClient apnsClient;
 
     @Test
-    void send() throws InterruptedException {
-        String pushToken = "e3da402bd00d5f9189783d2dcbc66f832fae3785d58961852e54c62b62968e3b";
+    void send() {
+        String pushToken = "b2cdf0924fe1038722bcbc0b659ae6a75a0c078dfbd5c7856c3aea720b9eb2ca";
         String payload = new SimpleApnsPayloadBuilder()
                 .setAlertTitle("테스트")
                 .setAlertBody("ㅎㅇ")
@@ -35,6 +35,9 @@ class ApnsPushNotificationSenderTest {
         log.info("payload: {}", payload);
 
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(pushToken, appleProperties.getBundleId(), payload);
-        apnsClient.sendNotification(pushNotification);
+        apnsClient.sendNotification(pushNotification)
+                .whenComplete((response, throwable) -> {
+                    log.info("response: {}", response, throwable);
+                });
     }
 }

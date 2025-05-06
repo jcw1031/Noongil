@@ -18,7 +18,7 @@ import java.util.Optional;
 @Service
 public class SafetyService {
 
-    private static final double THRESHOLD = 0.7;
+    private static final double PREDICTED_SAFETY_CAUTION = 1;
     private static final int SAFETY_RESPONSE_LIMIT_DURATION_MINUTES = 5;
 
     private final SafetyRepository safetyRepository;
@@ -70,7 +70,7 @@ public class SafetyService {
     @Transactional
     public void checkSafety(double inferenceResult) {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
-        if (inferenceResult < THRESHOLD) { // TODO: AI 모델 추론 결과가 어떻게 나오는지 파악 후 수정
+        if (inferenceResult == PREDICTED_SAFETY_CAUTION) {
             Safety cautionSafety = Safety.caution(authenticatedUser.getId());
             safetyRepository.save(cautionSafety);
             safetyNotificationSender.sendSafetyNotification(authenticatedUser);

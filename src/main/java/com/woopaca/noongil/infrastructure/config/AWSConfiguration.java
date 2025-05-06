@@ -25,6 +25,7 @@ public class AWSConfiguration {
     private String s3secretKey;
     private String sqsAccessKey;
     private String sqsSecretKey;
+    private String sqsQueueUrl;
 
     @Bean
     public S3Client s3Client() {
