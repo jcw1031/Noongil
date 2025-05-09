@@ -10,7 +10,6 @@ import com.woopaca.noongil.event.NotificationEventPublisher;
 import com.woopaca.noongil.infrastructure.notification.PushNotificationSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 
@@ -52,7 +51,7 @@ public class EmergencyContactService {
                 .accepted(name, contact, authenticatedUser.getId(), otherUser.getId());
         emergencyContactRepository.save(emergencyContact);
 
-        if (otherUser.isPushNotification() && StringUtils.hasText(otherUser.getPushToken())) {
+        if (otherUser.isPushNotification()) {
             pushNotificationSender.send(otherUser.getPushToken(), "비상연락망 등록 알림",
                     String.format("%s님이 당신을 비상연락망으로 등록했어요.", authenticatedUser.getName()));
         }

@@ -36,7 +36,6 @@ public class UpdateActivitiesInducementScheduler {
                 .parallelStream()
                 .filter(User::isPushNotification)
                 .map(User::getPushToken)
-                .filter(Objects::nonNull)
                 .forEach(pushToken -> apnsPushNotificationSender
                         .send(pushToken, "오늘도 힘찬 하루를 시작해볼까요?", "눈길이 항상 당신과 함께해요 😊"));
     }

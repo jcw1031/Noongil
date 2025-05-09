@@ -52,7 +52,7 @@ public class UserController {
         UserInfoResponse response = UserInfoResponse.builder()
                 .name(authenticatedUser.getName())
                 .email(authenticatedUser.getEmail())
-                .consents(new Consents(authenticatedUser.isPushNotification(), authenticatedUser.isSmsNotification()))
+                .consents(new Consents(authenticatedUser.getPushNotification(), authenticatedUser.isSmsNotification()))
                 .build();
         return ApiResults.success(response);
     }

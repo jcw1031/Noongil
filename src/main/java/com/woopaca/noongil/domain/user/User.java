@@ -99,4 +99,12 @@ public class User extends BaseEntity {
             this.smsNotification = sms;
         }
     }
+
+    public boolean isPushNotification() {
+        return pushNotification && StringUtils.hasText(pushToken);
+    }
+
+    public boolean getPushNotification() {
+        return pushNotification;
+    }
 }
