@@ -16,17 +16,17 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @Slf4j
+@Profile({"!local", "!test"})
 @Configuration
 public class ApplePushConfiguration {
 
     @Bean
-    @Profile({"develop", "local-develop"})
     public ApnsClient developApnsClient(AppleProperties appleProperties) {
         try (InputStream resourceAsStream = new ClassPathResource(appleProperties.getPrivateKeyPath())
                 .getInputStream()) {
             ApnsSigningKey signingKey = ApnsSigningKey
                     .loadFromInputStream(resourceAsStream, appleProperties.getTeamId(), appleProperties.getPrivateKeyId());
-            return new ApnsClientBuilder().setApnsServer(ApnsClientBuilder.PRODUCTION_APNS_HOST)
+            return new ApnsClientBuilder().setApnsServer(ApnsClientBuilder.DEVELOPMENT_APNS_HOST)
                     .setSigningKey(signingKey)
                     .build();
         } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
@@ -36,7 +36,6 @@ public class ApplePushConfiguration {
     }
 
     @Bean
-    @Profile("production")
     public ApnsClient apnsClient(AppleProperties appleProperties) {
         try (InputStream resourceAsStream = new ClassPathResource(appleProperties.getPrivateKeyPath())
                 .getInputStream()) {

@@ -9,4 +9,6 @@ import java.util.Collection;
 public interface EmergencyContactRepository extends JpaRepository<EmergencyContact, Long> {
 
     Collection<EmergencyContact> findByUserId(Long userId);
+
+    Collection<EmergencyContact> findByContact(String contact);
 }

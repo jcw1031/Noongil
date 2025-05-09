@@ -14,10 +14,12 @@ import org.springframework.stereotype.Component;
 public class ApnsPushNotificationSender implements PushNotificationSender {
 
     private final ApnsClient apnsClient;
+    private final ApnsClient developApnsClient;
     private final AppleProperties appleProperties;
 
-    public ApnsPushNotificationSender(ApnsClient apnsClient, AppleProperties appleProperties) {
+    public ApnsPushNotificationSender(ApnsClient apnsClient, ApnsClient developApnsClient, AppleProperties appleProperties) {
         this.apnsClient = apnsClient;
+        this.developApnsClient = developApnsClient;
         this.appleProperties = appleProperties;
     }
 
@@ -32,6 +34,11 @@ public class ApnsPushNotificationSender implements PushNotificationSender {
         apnsClient.sendNotification(pushNotification)
                 .whenComplete((response, throwable) -> {
                     log.info("APNs 푸시 전송 response: {}", response, throwable);
+                    if (!response.isAccepted()) {
+                        developApnsClient.sendNotification(pushNotification)
+                                .whenComplete((retryResponse, retryThrowable) ->
+                                        log.info("APNs 푸시 재전송: {}", retryResponse, retryThrowable));
+                    }
                 });
     }
 
@@ -43,6 +50,11 @@ public class ApnsPushNotificationSender implements PushNotificationSender {
         apnsClient.sendNotification(pushNotification)
                 .whenComplete((response, throwable) -> {
                     log.info("APNs 백그라운드 업데이트 푸시 전송 response: {}", response, throwable);
+                    if (!response.isAccepted()) {
+                        developApnsClient.sendNotification(pushNotification)
+                                .whenComplete((retryResponse, retryThrowable) ->
+                                        log.info("APNs 백그라운드 푸시 재전송: {}", retryResponse, retryThrowable));
+                    }
                 });
     }
 }

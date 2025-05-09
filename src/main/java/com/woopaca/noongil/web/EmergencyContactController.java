@@ -44,7 +44,7 @@ public class EmergencyContactController {
         return ApiResults.success(response);
     }
 
-    @PutMapping("/{contactId}/notification")
+    @PutMapping("/{contactId}/notifications")
     public ApiResponse<Void> changeNotification(@RequestBody ChangeNotificationRequest request,
                                                 @PathVariable("contactId") Long contactId) {
         emergencyContactService.changeNotification(contactId, request.notification());

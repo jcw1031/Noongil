@@ -64,13 +64,17 @@ public class SafetyService {
     }
 
     private boolean isSafetyResponseTimeout(LocalDateTime currentDateTime, LocalDateTime updatedAt) {
-        return Duration.between(currentDateTime, updatedAt).toMinutes() >= SAFETY_RESPONSE_LIMIT_DURATION_MINUTES;
+        return Duration.between(updatedAt, currentDateTime).toMinutes() >= SAFETY_RESPONSE_LIMIT_DURATION_MINUTES;
     }
 
     @Transactional
     public void checkSafety(double inferenceResult) {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
-        if (inferenceResult == PREDICTED_SAFETY_CAUTION) {
+        LocalDateTime startOfDay = LocalDate.now()
+                .atStartOfDay();
+        Optional<Safety> safety = safetyRepository
+                .findByUpdatedAtIsGreaterThanEqualAndUserId(startOfDay, authenticatedUser.getId());
+        if (inferenceResult == PREDICTED_SAFETY_CAUTION && safety.isEmpty()) {
             Safety cautionSafety = Safety.caution(authenticatedUser.getId());
             safetyRepository.save(cautionSafety);
             safetyNotificationSender.sendSafetyNotification(authenticatedUser);

@@ -12,11 +12,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = "emergency_contact", indexes = {
-        @Index(name = "idx_contact", columnList = "contact"),
-        @Index(name = "idx_user_id", columnList = "user_id"),
-        @Index(name = "idx_contact_user_id", columnList = "contact_user_id")
-})
+@Table(name = "emergency_contact", indexes = {@Index(name = "idx_contact", columnList = "contact"), @Index(name = "idx_user_id", columnList = "user_id"), @Index(name = "idx_contact_user_id", columnList = "contact_user_id")})
 public class EmergencyContact extends BaseEntity {
 
     @Column(nullable = false, length = 12)
@@ -51,24 +47,11 @@ public class EmergencyContact extends BaseEntity {
     }
 
     public static EmergencyContact accepted(String name, String contact, Long userId, Long contactUserId) {
-        return EmergencyContact.builder()
-                .name(name)
-                .contact(contact)
-                .notification(true)
-                .status(EmergencyContactStatus.ACCEPTED)
-                .userId(userId)
-                .contactUserId(contactUserId)
-                .build();
+        return EmergencyContact.builder().name(name).contact(contact).notification(true).status(EmergencyContactStatus.ACCEPTED).userId(userId).contactUserId(contactUserId).build();
     }
 
     public static EmergencyContact pending(String name, String contact, Long userId) {
-        return EmergencyContact.builder()
-                .name(name)
-                .contact(contact)
-                .notification(false)
-                .status(EmergencyContactStatus.PENDING)
-                .userId(userId)
-                .build();
+        return EmergencyContact.builder().name(name).contact(contact).notification(false).status(EmergencyContactStatus.PENDING).userId(userId).build();
     }
 
     public void toAccepted(String contact, Long contactUserId) {

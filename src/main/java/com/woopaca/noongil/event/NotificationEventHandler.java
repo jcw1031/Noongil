@@ -20,11 +20,9 @@ public class NotificationEventHandler {
             """;
 
     private final SmsSender smsSender;
-    private final PushNotificationSender pushNotificationSender;
 
-    public NotificationEventHandler(SmsSender smsSender, PushNotificationSender pushNotificationSender) {
+    public NotificationEventHandler(SmsSender smsSender) {
         this.smsSender = smsSender;
-        this.pushNotificationSender = pushNotificationSender;
     }
 
     @Async
@@ -33,7 +31,7 @@ public class NotificationEventHandler {
         log.info("비상연락망 등록 이벤트 처리");
         String message = REGISTER_EMERGENCY_CONTACT_MESSAGE
                 .replace("{name}", event.name())
-                .replace("{url}", "https://naver.com");
+                .replace("{url}", "https://apps.apple.com/kr/app/id6744869018");
         smsSender.send(event.contact(), message);
     }
 }

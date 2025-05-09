@@ -2,7 +2,6 @@ package com.woopaca.noongil.application.emergency.contact;
 
 import com.woopaca.noongil.domain.emergencycontact.EmergencyContact;
 import com.woopaca.noongil.domain.emergencycontact.EmergencyContactRepository;
-import com.woopaca.noongil.domain.emergencycontact.EmergencyContactStatus;
 import com.woopaca.noongil.domain.user.User;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +40,7 @@ public class EmergencyContactValidator {
             throw new IllegalArgumentException("비상연락망 등록자가 아닙니다.");
         }
 
-        if (emergencyContact.getStatus() != EmergencyContactStatus.ACCEPTED) {
+        if (emergencyContact.isPending()) {
             throw new IllegalArgumentException("비상연락망 등록이 승인되지 않았습니다.");
         }
     }

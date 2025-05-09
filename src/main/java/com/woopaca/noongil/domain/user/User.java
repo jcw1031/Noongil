@@ -80,8 +80,8 @@ public class User extends BaseEntity {
     }
 
     public void updatePushToken(String pushToken) {
-        if (StringUtils.hasText(this.pushToken)) {
-            throw new IllegalStateException("푸시 토큰이 이미 등록되어 있습니다.");
+        if (!StringUtils.hasText(pushToken)) {
+            throw new IllegalArgumentException("푸시 토큰 값이 비어있습니다.");
         }
 
         this.pushToken = pushToken;

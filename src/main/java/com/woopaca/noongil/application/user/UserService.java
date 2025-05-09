@@ -3,6 +3,8 @@ package com.woopaca.noongil.application.user;
 import com.woopaca.noongil.application.auth.AuthenticatedUserHolder;
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRepository;
+import com.woopaca.noongil.event.UserRegistrationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.userRepository = userRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
@@ -25,6 +29,7 @@ public class UserService {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
         authenticatedUser.updateContact(contact);
         userRepository.save(authenticatedUser);
+        applicationEventPublisher.publishEvent(new UserRegistrationEvent(authenticatedUser));
     }
 
     public void registerUserPushToken(String pushToken) {

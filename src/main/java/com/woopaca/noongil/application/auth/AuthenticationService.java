@@ -2,12 +2,14 @@ package com.woopaca.noongil.application.auth;
 
 import com.woopaca.noongil.domain.user.User;
 import com.woopaca.noongil.domain.user.UserRegistrar;
+import com.woopaca.noongil.event.UserRegistrationEvent;
 import com.woopaca.noongil.infrastructure.oauth2.OAuth2Client;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleOAuth2User;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleToken;
 import com.woopaca.noongil.infrastructure.oauth2.apple.AppleUserInformationExtractor;
 import com.woopaca.noongil.security.JwtProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +21,14 @@ public class AuthenticationService {
     private final AppleUserInformationExtractor userInformationExtractor;
     private final UserRegistrar userRegistrar;
     private final JwtProvider jwtProvider;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public AuthenticationService(OAuth2Client oAuth2Client, AppleUserInformationExtractor userInformationExtractor, UserRegistrar userRegistrar, JwtProvider jwtProvider) {
+    public AuthenticationService(OAuth2Client oAuth2Client, AppleUserInformationExtractor userInformationExtractor, UserRegistrar userRegistrar, JwtProvider jwtProvider, ApplicationEventPublisher applicationEventPublisher) {
         this.oAuth2Client = oAuth2Client;
         this.userInformationExtractor = userInformationExtractor;
         this.userRegistrar = userRegistrar;
         this.jwtProvider = jwtProvider;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional

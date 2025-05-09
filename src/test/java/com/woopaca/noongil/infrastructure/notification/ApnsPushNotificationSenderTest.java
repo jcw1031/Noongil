@@ -23,12 +23,15 @@ class ApnsPushNotificationSenderTest {
     @Autowired
     private ApnsClient apnsClient;
 
+    @Autowired
+    private ApnsClient developApnsClient;
+
     @Test
-    void send() {
-        String pushToken = "b2cdf0924fe1038722bcbc0b659ae6a75a0c078dfbd5c7856c3aea720b9eb2ca";
+    void send() throws InterruptedException {
+        String pushToken = "d502176d22391aa129e05dcf1a9dfacf4586336270010a19203f97221f993098";
         String payload = new SimpleApnsPayloadBuilder()
-                .setAlertTitle("테스트")
-                .setAlertBody("ㅎㅇ")
+                .setAlertTitle("비상연락망 등록 알림")
+                .setAlertBody("지찬우님이 당신을 비상연락망으로 등록했어요.")
                 .setSound(SimpleApnsPayloadBuilder.DEFAULT_SOUND_FILENAME)
                 .addCustomProperty("category", "emergency")
                 .build();
@@ -38,6 +41,12 @@ class ApnsPushNotificationSenderTest {
         apnsClient.sendNotification(pushNotification)
                 .whenComplete((response, throwable) -> {
                     log.info("response: {}", response, throwable);
+                    if (!response.isAccepted()) {
+                        developApnsClient.sendNotification(pushNotification)
+                                .whenComplete((retryResponse, retryThrowable) ->
+                                        log.info("APNs 푸시 재전송: {}", retryResponse, retryThrowable));
+                    }
                 });
+        Thread.sleep(2_000L);
     }
 }
