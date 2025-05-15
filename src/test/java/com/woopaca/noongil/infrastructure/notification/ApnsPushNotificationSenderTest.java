@@ -28,7 +28,7 @@ class ApnsPushNotificationSenderTest {
 
     @Test
     void send() throws InterruptedException {
-        String pushToken = "d502176d22391aa129e05dcf1a9dfacf4586336270010a19203f97221f993098";
+        String pushToken = "843dd0319a534d6f627962b6fae6636255cded50c7504e74d98082d79e924e1a";
         String payload = new SimpleApnsPayloadBuilder()
                 .setAlertTitle("비상연락망 등록 알림")
                 .setAlertBody("지찬우님이 당신을 비상연락망으로 등록했어요.")

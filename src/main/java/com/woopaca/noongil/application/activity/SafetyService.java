@@ -19,7 +19,7 @@ import java.util.Optional;
 public class SafetyService {
 
     private static final double PREDICTED_SAFETY_CAUTION = 1;
-    private static final int SAFETY_RESPONSE_LIMIT_DURATION_MINUTES = 5;
+    private static final int SAFETY_RESPONSE_LIMIT_DURATION_HOURS = 6;
 
     private final SafetyRepository safetyRepository;
     private final SafetyNotificationSender safetyNotificationSender;
@@ -37,12 +37,20 @@ public class SafetyService {
 
     public SafetyStatus getUserSafetyStatus() {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
-        LocalDateTime startOfToday = LocalDate.now()
-                .atStartOfDay();
-        return safetyRepository
-                .findByUpdatedAtIsGreaterThanEqualAndUserId(startOfToday, authenticatedUser.getId())
+        SafetyStatus lastStatus = safetyRepository.findTopByUserIdOrderByCreatedAtDesc(authenticatedUser.getId())
                 .map(Safety::getStatus)
-                .orElse(null);
+                .orElse(SafetyStatus.SAFE);
+        switch (lastStatus) {
+            case CAUTION -> {
+                return SafetyStatus.CAUTION;
+            }
+            case WARNING, DANGER -> {
+                return SafetyStatus.DANGER;
+            }
+            default -> {
+                return SafetyStatus.SAFE;
+            }
+        }
     }
 
     public void automaticChangeSafetyStatus() {
@@ -64,7 +72,7 @@ public class SafetyService {
     }
 
     private boolean isSafetyResponseTimeout(LocalDateTime currentDateTime, LocalDateTime updatedAt) {
-        return Duration.between(updatedAt, currentDateTime).toMinutes() >= SAFETY_RESPONSE_LIMIT_DURATION_MINUTES;
+        return Duration.between(updatedAt, currentDateTime).toHours() >= SAFETY_RESPONSE_LIMIT_DURATION_HOURS;
     }
 
     @Transactional

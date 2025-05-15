@@ -33,10 +33,7 @@ public class SafetyController {
     @GetMapping
     public ApiResponse<SafetyStatusResponse> getSafetyStatus() {
         SafetyStatus safetyStatus = safetyService.getUserSafetyStatus();
-        if (safetyStatus == SafetyStatus.CAUTION) {
-            return ApiResults.success(new SafetyStatusResponse("DANGER"));
-        }
-        return ApiResults.success(new SafetyStatusResponse("SAFE"));
+        return ApiResults.success(new SafetyStatusResponse(safetyStatus.name()));
     }
 
     @PostMapping
