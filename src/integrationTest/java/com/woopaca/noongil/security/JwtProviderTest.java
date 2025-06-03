@@ -21,7 +21,7 @@ class JwtProviderTest {
 
     @Test
     void issueAccessToken() {
-        User user = userRepository.findById(19L)
+        User user = userRepository.findById(46L)
                 .get();
         String accessToken = jwtProvider.issueAccessToken(user);
         log.info("accessToken: {}", accessToken);

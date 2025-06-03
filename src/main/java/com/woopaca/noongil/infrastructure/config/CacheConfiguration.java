@@ -12,6 +12,6 @@ public class CacheConfiguration {
 
     @Bean
     public CacheManager localCacheManager() {
-        return new ConcurrentMapCacheManager("publicHolidays");
+        return new ConcurrentMapCacheManager("publicHolidays", "cultureEvents");
     }
 }
