@@ -80,6 +80,7 @@ public class EmergencyContactService {
         emergencyContactRepository.save(emergencyContact);
     }
 
+    @Transactional
     public void deleteEmergencyContact(Long contactId) {
         User authenticatedUser = AuthenticatedUserHolder.getAuthenticatedUser();
         userRepository.acquireExclusiveLock(authenticatedUser.getId());
